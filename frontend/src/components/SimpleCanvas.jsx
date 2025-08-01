@@ -8,10 +8,9 @@ import {
   Circle,
 } from "fabric";
 import Cursor from "./Cursor";
-import DrawingToolbar from "./DrawingToolbar";
 import { useThrottle } from "../hooks/useThrottle";
 
-const SimpleCanvas = ({ socket, roomId }) => {
+const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCanvasFunctionsReady }) => {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
   const canvasContainerRef = useRef(null);
@@ -19,20 +18,38 @@ const SimpleCanvas = ({ socket, roomId }) => {
   // State for remote cursors
   const [remoteCursors, setRemoteCursors] = useState(new Map());
 
-  // Drawing tool states
-  const [activeTool, setActiveTool] = useState("pen");
-  const [brushSize, setBrushSize] = useState(5);
-  const [brushColor, setBrushColor] = useState("#000000");
-
   // Shape drawing states using refs to avoid closure issues
   const isDrawingShapeRef = useRef(false);
   const shapeStartPointRef = useRef(null);
   const currentShapeRef = useRef(null);
 
-  // Tool state refs to avoid stale closures in event handlers
+  // Tool state refs to reflect current props
   const activeToolRef = useRef(activeTool);
   const brushColorRef = useRef(brushColor);
   const brushSizeRef = useRef(brushSize);
+
+  // Update refs when props change
+  useEffect(() => {
+    activeToolRef.current = activeTool;
+    brushColorRef.current = brushColor;
+    brushSizeRef.current = brushSize;
+    
+    // Update canvas settings when tool state changes
+    if (fabricCanvasRef.current) {
+      updateCanvasSettings(fabricCanvasRef.current);
+    }
+  }, [activeTool, brushColor, brushSize]);
+
+  // Expose canvas functions to parent component
+  useEffect(() => {
+    if (onCanvasFunctionsReady) {
+      onCanvasFunctionsReady({
+        clearCanvas: handleClearCanvas,
+        saveAsPNG: handleSaveAsPNG,
+        saveAsJPG: handleSaveAsJPG,
+      });
+    }
+  }, [onCanvasFunctionsReady]);
 
   // Throttled cursor emission to prevent spam (moved outside useEffect)
   const throttledCursorEmit = useThrottle((x, y) => {
@@ -584,30 +601,11 @@ const SimpleCanvas = ({ socket, roomId }) => {
   }, [socket, roomId]);
 
   return (
-    <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
-      {/* Drawing Toolbar */}
-      <DrawingToolbar
-        activeTool={activeTool}
-        setActiveTool={setActiveTool}
-        brushSize={brushSize}
-        setBrushSize={setBrushSize}
-        brushColor={brushColor}
-        setBrushColor={setBrushColor}
-        onClearCanvas={handleClearCanvas}
-        onSaveAsPNG={handleSaveAsPNG}
-        onSaveAsJPG={handleSaveAsJPG}
-      />
-
+    <div className="w-full h-full flex items-center justify-center p-8">
       {/* Canvas Container */}
       <div
         ref={canvasContainerRef}
-        style={{
-          position: "relative", // Important for cursor positioning
-          border: "2px solid #ddd",
-          borderRadius: "8px",
-          display: "inline-block",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-        }}
+        className="relative border-2 border-gray-300 rounded-xl shadow-xl bg-white overflow-hidden"
       >
         <canvas ref={canvasRef} />
 

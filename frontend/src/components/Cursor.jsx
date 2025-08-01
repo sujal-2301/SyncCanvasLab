@@ -16,15 +16,11 @@ const Cursor = ({ userId, name, color, x, y, visible }) => {
 
   return (
     <div
-      className="remote-cursor"
+      className="absolute pointer-events-none z-50 transition-all duration-100 ease-out"
       style={{
-        position: "absolute",
         left: x,
         top: y,
         transform: "translate(-2px, -2px)",
-        pointerEvents: "none",
-        zIndex: 1000,
-        transition: "all 0.1s ease-out",
       }}
     >
       {/* Cursor pointer */}
@@ -46,20 +42,9 @@ const Cursor = ({ userId, name, color, x, y, visible }) => {
       {/* User label */}
       {showLabel && (
         <div
-          className="cursor-label"
+          className="absolute left-4 -top-2 px-2 py-0.5 rounded-full text-xs font-medium text-white whitespace-nowrap shadow-lg animate-fade-in"
           style={{
-            position: "absolute",
-            left: "18px",
-            top: "-8px",
-            background: color,
-            color: "white",
-            padding: "2px 8px",
-            borderRadius: "12px",
-            fontSize: "12px",
-            fontWeight: "500",
-            whiteSpace: "nowrap",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-            animation: "fadeIn 0.2s ease-out",
+            backgroundColor: color,
           }}
         >
           {name}

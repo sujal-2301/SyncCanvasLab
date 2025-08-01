@@ -38,30 +38,34 @@ const UserList = ({ socket, roomId }) => {
   }, [socket, onlineUsers]);
 
   return (
-    <div className="user-list">
-      <h3 className="user-list-title">Online Users ({onlineUsers.length})</h3>
+    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        Online Users ({onlineUsers.length})
+      </h3>
 
-      <div className="users">
+      <div className="space-y-3">
         {onlineUsers.map((user) => (
-          <div key={user.id} className="user-item">
+          <div key={user.id} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg">
             <div
-              className="user-avatar"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
               style={{ backgroundColor: user.color }}
             >
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <span className="user-name">
-              {user.name} {socket.id === user.id && "(You)"}
+            <span className="flex-1 text-sm font-medium text-gray-900">
+              {user.name} {socket.id === user.id && (
+                <span className="text-primary-600 font-semibold">(You)</span>
+              )}
             </span>
-            <div className="user-status online"></div>
+            <div className="w-2 h-2 bg-success-500 rounded-full"></div>
           </div>
         ))}
       </div>
 
-      <div className="room-info">
-        <h4>Room: {roomId}</h4>
+      <div className="mt-6 pt-4 border-t border-gray-200">
+        <h4 className="text-sm font-medium text-gray-700 mb-2">Room: {roomId}</h4>
         <button
-          className="share-btn"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary-50 text-primary-600 border border-primary-200 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-primary-100 hover:border-primary-300"
           onClick={() => {
             const roomUrl = `${window.location.origin}?room=${roomId}`;
             navigator.clipboard.writeText(roomUrl);

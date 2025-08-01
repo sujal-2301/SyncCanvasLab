@@ -30,43 +30,58 @@ const DrawingToolbar = ({
   const brushSizes = [1, 2, 5, 10, 15, 20, 30];
 
   return (
-    <div className="drawing-toolbar">
-      <div className="toolbar-section">
-        <h4>🛠️ Tools</h4>
-        <div className="tool-grid">
+    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-lg w-full font-sans h-fit">
+      {/* Tools Section */}
+      <div className="mb-6 pb-5 border-b border-gray-100">
+        <h4 className="m-0 mb-4 text-xs font-semibold text-gray-700 flex items-center gap-2 uppercase tracking-wider">
+          🛠️ Tools
+        </h4>
+        <div className="grid grid-cols-2 gap-2">
           {tools.map((tool) => (
             <button
               key={tool.id}
-              className={`tool-btn ${activeTool === tool.id ? 'active' : ''}`}
+              className={`flex items-center gap-2.5 px-3.5 py-3 border-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                activeTool === tool.id 
+                  ? 'border-primary-500 bg-primary-50 text-primary-700 shadow-sm' 
+                  : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
+              }`}
               onClick={() => setActiveTool(tool.id)}
               title={tool.name}
             >
-              <span className="tool-icon">{tool.icon}</span>
-              <span className="tool-name">{tool.name}</span>
+              <span className="text-base leading-none">{tool.icon}</span>
+              <span className="text-xs">{tool.name}</span>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="toolbar-section">
-        <h4>🎨 Color</h4>
-        <div className="color-section">
+      {/* Color Section */}
+      <div className="mb-6 pb-5 border-b border-gray-100">
+        <h4 className="m-0 mb-4 text-xs font-semibold text-gray-700 flex items-center gap-2 uppercase tracking-wider">
+          🎨 Color
+        </h4>
+        <div className="relative">
           <button
-            className="color-preview"
+            className="w-full h-12 rounded-lg border-2 border-gray-200 flex items-center justify-between px-3 text-sm font-medium transition-all duration-200 hover:border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
             style={{ backgroundColor: brushColor }}
             onClick={() => setShowColorPicker(!showColorPicker)}
             title="Choose color"
           >
-            <span className="color-text">{brushColor}</span>
+            <span className="text-white text-shadow font-mono text-xs">{brushColor}</span>
+            <svg className="w-4 h-4 text-white text-shadow" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
           </button>
           
           {showColorPicker && (
-            <div className="color-picker">
-              <div className="predefined-colors">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10 animate-slide-in">
+              <div className="grid grid-cols-4 gap-2 mb-4">
                 {predefinedColors.map((color) => (
                   <button
                     key={color}
-                    className={`color-option ${brushColor === color ? 'selected' : ''}`}
+                    className={`w-8 h-8 rounded-lg border-2 transition-all duration-200 hover:scale-110 ${
+                      brushColor === color ? 'border-primary-500 shadow-md' : 'border-gray-200'
+                    }`}
                     style={{ backgroundColor: color }}
                     onClick={() => {
                       setBrushColor(color);
@@ -76,36 +91,42 @@ const DrawingToolbar = ({
                   />
                 ))}
               </div>
-              <div className="custom-color">
+              <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
                 <input
                   type="color"
                   value={brushColor}
                   onChange={(e) => setBrushColor(e.target.value)}
-                  className="color-input"
+                  className="color-picker w-8 h-8 rounded-lg border border-gray-200 cursor-pointer"
                 />
-                <label>Custom</label>
+                <label className="text-xs font-medium text-gray-600">Custom Color</label>
               </div>
             </div>
           )}
         </div>
       </div>
 
-      <div className="toolbar-section">
-        <h4>📏 Size</h4>
-        <div className="size-section">
-          <div className="size-slider">
+      {/* Size Section */}
+      <div className="mb-6 pb-5 border-b border-gray-100">
+        <h4 className="m-0 mb-4 text-xs font-semibold text-gray-700 flex items-center gap-2 uppercase tracking-wider">
+          📏 Size
+        </h4>
+        <div className="space-y-4">
+          <div className="space-y-3">
             <input
               type="range"
               min="1"
               max="50"
               value={brushSize}
               onChange={(e) => setBrushSize(parseInt(e.target.value))}
-              className="slider"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+              style={{
+                background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${(brushSize-1)/49*100}%, #e2e8f0 ${(brushSize-1)/49*100}%, #e2e8f0 100%)`
+              }}
             />
-            <div className="size-display">
-              <span className="size-value">{brushSize}px</span>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-900">{brushSize}px</span>
               <div 
-                className="size-preview"
+                className="rounded-full border border-gray-200"
                 style={{
                   width: Math.min(brushSize, 30),
                   height: Math.min(brushSize, 30),
@@ -115,16 +136,20 @@ const DrawingToolbar = ({
             </div>
           </div>
           
-          <div className="size-presets">
+          <div className="flex flex-wrap gap-2">
             {brushSizes.map((size) => (
               <button
                 key={size}
-                className={`size-btn ${brushSize === size ? 'active' : ''}`}
+                className={`flex items-center justify-center w-10 h-10 border-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                  brushSize === size 
+                    ? 'border-primary-500 bg-primary-50' 
+                    : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}
                 onClick={() => setBrushSize(size)}
                 title={`${size}px`}
               >
                 <div 
-                  className="size-dot"
+                  className="rounded-full"
                   style={{
                     width: Math.min(size, 20),
                     height: Math.min(size, 20),
@@ -137,25 +162,28 @@ const DrawingToolbar = ({
         </div>
       </div>
 
-      <div className="toolbar-section">
-        <h4>🗑️ Actions</h4>
-        <div className="action-buttons">
+      {/* Actions Section */}
+      <div>
+        <h4 className="m-0 mb-4 text-xs font-semibold text-gray-700 flex items-center gap-2 uppercase tracking-wider">
+          🗑️ Actions
+        </h4>
+        <div className="space-y-2">
           <button 
-            className="action-btn clear-btn"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-danger-200 text-danger-600 bg-danger-50 rounded-lg text-sm font-medium transition-all duration-200 hover:border-danger-300 hover:bg-danger-100 focus:border-danger-500 focus:ring-2 focus:ring-danger-200"
             onClick={onClearCanvas}
             title="Clear canvas"
           >
             🗑️ Clear All
           </button>
           <button 
-            className="action-btn save-btn"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-primary-200 text-primary-600 bg-primary-50 rounded-lg text-sm font-medium transition-all duration-200 hover:border-primary-300 hover:bg-primary-100 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
             onClick={onSaveAsPNG}
             title="Save as PNG (high quality)"
           >
             💾 Save PNG
           </button>
           <button 
-            className="action-btn save-btn"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-primary-200 text-primary-600 bg-primary-50 rounded-lg text-sm font-medium transition-all duration-200 hover:border-primary-300 hover:bg-primary-100 focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
             onClick={onSaveAsJPG}
             title="Save as JPG (smaller file)"
           >
@@ -163,6 +191,31 @@ const DrawingToolbar = ({
           </button>
         </div>
       </div>
+
+      <style jsx>{`
+        .text-shadow {
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #6366f1;
+          cursor: pointer;
+          border: 2px solid #ffffff;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .slider::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          cursor: pointer;
+          background: #6366f1;
+          border: 2px solid #ffffff;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+      `}</style>
     </div>
   );
 };
