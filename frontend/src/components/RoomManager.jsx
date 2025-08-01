@@ -4,11 +4,16 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   const [activeTab, setActiveTab] = useState("join");
   const [roomCode, setRoomCode] = useState("");
   const [roomName, setRoomName] = useState("");
+  const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleJoinRoom = async (e) => {
     e.preventDefault();
+    if (!username.trim()) {
+      setError("Please enter your name");
+      return;
+    }
     if (!roomCode.trim()) {
       setError("Please enter a room code");
       return;
@@ -18,7 +23,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
     setError("");
 
     try {
-      await onJoinRoom(roomCode.trim().toUpperCase());
+      await onJoinRoom(roomCode.trim().toUpperCase(), username.trim());
     } catch (err) {
       // Provide more specific feedback for common errors
       if (err.message.includes("Room not found")) {
@@ -33,11 +38,18 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
   const handleCreateRoom = async (e) => {
     e.preventDefault();
+    if (!username.trim()) {
+      setError("Please enter your name");
+      return;
+    }
     setIsLoading(true);
     setError("");
 
     try {
-      await onCreateRoom(roomName.trim() || "Untitled Room");
+      await onCreateRoom(
+        roomName.trim() || "Untitled Room",
+        username.trim()
+      );
     } catch (err) {
       setError(err.message || "Failed to create room");
     } finally {
@@ -62,6 +74,26 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
         </div>
 
         <div className="px-8 py-6">
+          {/* Username Input */}
+          <div className="mb-4">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Your Name
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your name..."
+              maxLength={25}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+              disabled={isLoading}
+            />
+          </div>
+
           {/* Tabs */}
           <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
             <button
@@ -124,7 +156,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               <button
                 type="submit"
                 className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={isLoading || !roomCode.trim()}
+                disabled={isLoading || !roomCode.trim() || !username.trim()}
               >
                 {isLoading ? (
                   <>
@@ -184,7 +216,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               <button
                 type="submit"
                 className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={isLoading}
+                disabled={isLoading || !username.trim()}
               >
                 {isLoading ? (
                   <>

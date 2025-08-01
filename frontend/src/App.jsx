@@ -35,7 +35,7 @@ function App() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   // Room management functions
-  const createRoom = async (roomName) => {
+  const createRoom = async (roomName, username) => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/rooms`, {
         method: "POST",
@@ -50,7 +50,7 @@ function App() {
         console.log("Room created:", data.room);
         // Manually set the room to trigger UI transition immediately
         setCurrentRoom(data.room);
-        await joinRoom(data.room.id);
+        await joinRoom(data.room.id, username);
       } else {
         throw new Error(data.error);
       }
@@ -60,7 +60,7 @@ function App() {
     }
   };
 
-  const joinRoom = async (roomCode) => {
+  const joinRoom = async (roomCode, username) => {
     try {
       // Validate room first
       const validateResponse = await fetch(
@@ -74,7 +74,7 @@ function App() {
 
       // Join the room via socket
       return new Promise((resolve, reject) => {
-        socket.emit("join-room", roomCode, (response) => {
+        socket.emit("join-room", { roomCode, username }, (response) => {
           if (response.success) {
             console.log("Successfully joined room:", roomCode);
             resolve();

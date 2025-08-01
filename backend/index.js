@@ -225,8 +225,9 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
   // Join room with validation
-  socket.on("join-room", (roomId, callback) => {
+  socket.on("join-room", ({ roomCode, username }, callback) => {
     try {
+      const roomId = roomCode.toUpperCase();
       // Auto-create room for backward compatibility (remove this later if needed)
       if (!rooms.has(roomId)) {
         console.log(`Creating room ${roomId} on first join (legacy)`);
@@ -240,7 +241,7 @@ io.on("connection", (socket) => {
       // Create user info with cursor data
       const userInfo = {
         id: socket.id,
-        name: generateUsername(),
+        name: username || generateUsername(), // Use provided username or generate one
         color: getUserColor(),
         cursor: { x: 0, y: 0, visible: false },
         joinedAt: new Date(),
