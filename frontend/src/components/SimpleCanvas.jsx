@@ -199,6 +199,9 @@ const SimpleCanvas = ({ socket, roomId }) => {
 
     // Create and set up the pencil brush properly
     const pencilBrush = new FabricPencilBrush(canvas);
+    // Configure brush for smooth, rounded drawing
+    pencilBrush.strokeLineCap = "round";
+    pencilBrush.strokeLineJoin = "round";
     canvas.freeDrawingBrush = pencilBrush;
 
     // Set initial drawing mode based on default tool (pen)
@@ -351,19 +354,23 @@ const SimpleCanvas = ({ socket, roomId }) => {
       console.log("Path created, emitting to server");
 
       // Use current brush settings instead of path object properties
-      // This ensures consistent stroke width across all clients
+      // This ensures consistent stroke width and visual properties across all clients
       const pathData = {
         type: "path:created",
         path: path.path,
         stroke: brushColorRef.current,
         strokeWidth: brushSizeRef.current,
         fill: path.fill,
+        strokeLineCap: "round", // Ensures rounded ends
+        strokeLineJoin: "round", // Ensures rounded corners
       };
 
       // Also update the local path to match current settings
       path.set({
         stroke: brushColorRef.current,
         strokeWidth: brushSizeRef.current,
+        strokeLineCap: "round",
+        strokeLineJoin: "round",
       });
       canvas.renderAll();
 
@@ -384,6 +391,8 @@ const SimpleCanvas = ({ socket, roomId }) => {
           stroke: pathData.stroke,
           strokeWidth: pathData.strokeWidth,
           fill: pathData.fill,
+          strokeLineCap: pathData.strokeLineCap || "round",
+          strokeLineJoin: pathData.strokeLineJoin || "round",
         });
         canvas.add(path);
         canvas.renderAll();
@@ -430,6 +439,8 @@ const SimpleCanvas = ({ socket, roomId }) => {
             stroke: pathData.stroke,
             strokeWidth: pathData.strokeWidth,
             fill: pathData.fill,
+            strokeLineCap: pathData.strokeLineCap || "round",
+            strokeLineJoin: pathData.strokeLineJoin || "round",
           });
           canvas.add(path);
         } else if (

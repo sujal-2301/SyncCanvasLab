@@ -24,16 +24,19 @@ const Canvas = ({ socket, tool, color, brushSize, roomId }) => {
     canvas.isDrawingMode = true;
     canvas.freeDrawingBrush.width = brushSize;
     canvas.freeDrawingBrush.color = color;
+    // Configure brush for smooth, rounded drawing
+    canvas.freeDrawingBrush.strokeLineCap = "round";
+    canvas.freeDrawingBrush.strokeLineJoin = "round";
 
     // Handle drawing events
     canvas.on("path:created", (e) => {
       const path = e.path;
-      
+
       // Use current brush settings instead of path object properties
-      // This ensures consistent stroke width across all clients
+      // This ensures consistent stroke width and visual properties across all clients
       const currentStrokeWidth = tool === "eraser" ? brushSize * 2 : brushSize;
       const currentStroke = tool === "eraser" ? "white" : color;
-      
+
       const pathData = {
         type: "path",
         path: path.path,
@@ -41,12 +44,16 @@ const Canvas = ({ socket, tool, color, brushSize, roomId }) => {
         stroke: currentStroke,
         strokeWidth: currentStrokeWidth,
         fill: path.fill,
+        strokeLineCap: "round", // Ensures rounded ends
+        strokeLineJoin: "round", // Ensures rounded corners
       };
 
       // Also update the local path to match current settings
       path.set({
         stroke: currentStroke,
         strokeWidth: currentStrokeWidth,
+        strokeLineCap: "round",
+        strokeLineJoin: "round",
       });
       canvas.renderAll();
 
@@ -66,6 +73,8 @@ const Canvas = ({ socket, tool, color, brushSize, roomId }) => {
           strokeWidth: drawingData.data.strokeWidth,
           fill: drawingData.data.fill,
           pathOffset: drawingData.data.pathOffset,
+          strokeLineCap: drawingData.data.strokeLineCap || "round",
+          strokeLineJoin: drawingData.data.strokeLineJoin || "round",
         });
         canvas.add(path);
         canvas.renderAll();
@@ -85,6 +94,8 @@ const Canvas = ({ socket, tool, color, brushSize, roomId }) => {
             strokeWidth: drawingData.data.strokeWidth,
             fill: drawingData.data.fill,
             pathOffset: drawingData.data.pathOffset,
+            strokeLineCap: drawingData.data.strokeLineCap || "round",
+            strokeLineJoin: drawingData.data.strokeLineJoin || "round",
           });
           canvas.add(path);
         }
