@@ -355,11 +355,20 @@ const SimpleCanvas = ({ socket, roomId }) => {
 
       // Use current brush settings instead of path object properties
       // This ensures consistent stroke width and visual properties across all clients
+      const currentStroke =
+        activeToolRef.current === "eraser"
+          ? fabricCanvasRef.current.backgroundColor || "white"
+          : brushColorRef.current;
+      const currentStrokeWidth =
+        activeToolRef.current === "eraser"
+          ? brushSizeRef.current * 2
+          : brushSizeRef.current;
+
       const pathData = {
         type: "path:created",
         path: path.path,
-        stroke: brushColorRef.current,
-        strokeWidth: brushSizeRef.current,
+        stroke: currentStroke,
+        strokeWidth: currentStrokeWidth,
         fill: path.fill,
         strokeLineCap: "round", // Ensures rounded ends
         strokeLineJoin: "round", // Ensures rounded corners
@@ -367,8 +376,8 @@ const SimpleCanvas = ({ socket, roomId }) => {
 
       // Also update the local path to match current settings
       path.set({
-        stroke: brushColorRef.current,
-        strokeWidth: brushSizeRef.current,
+        stroke: currentStroke,
+        strokeWidth: currentStrokeWidth,
         strokeLineCap: "round",
         strokeLineJoin: "round",
       });
