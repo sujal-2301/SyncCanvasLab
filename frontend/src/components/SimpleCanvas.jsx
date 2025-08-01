@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   Canvas,
   PencilBrush as FabricPencilBrush,
@@ -6,11 +6,19 @@ import {
   Line,
   Rect,
   Circle,
+  util as fabricUtil,
 } from "fabric";
 import Cursor from "./Cursor";
 import { useThrottle } from "../hooks/useThrottle";
 
-const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCanvasFunctionsReady }) => {
+const SimpleCanvas = ({
+  socket,
+  roomId,
+  activeTool,
+  brushSize,
+  brushColor,
+  onCanvasFunctionsReady,
+}) => {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
   const canvasContainerRef = useRef(null);
@@ -28,12 +36,20 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
   const brushColorRef = useRef(brushColor);
   const brushSizeRef = useRef(brushSize);
 
+  // Pan and zoom state for infinite canvas
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [isPanning, setIsPanning] = useState(false);
+  const [lastPanPoint, setLastPanPoint] = useState({ x: 0, y: 0 });
+  const touchStartDistance = useRef(0);
+  const wasDrawingMode = useRef(false);
+
   // Update refs when props change
   useEffect(() => {
     activeToolRef.current = activeTool;
     brushColorRef.current = brushColor;
     brushSizeRef.current = brushSize;
-    
+
     // Update canvas settings when tool state changes
     if (fabricCanvasRef.current) {
       updateCanvasSettings(fabricCanvasRef.current);
@@ -51,7 +67,33 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
     }
   }, [onCanvasFunctionsReady]);
 
-  // Throttled cursor emission to prevent spam (moved outside useEffect)
+  // Handle window resize for responsive canvas
+  useEffect(() => {
+    const handleResize = () => {
+      if (fabricCanvasRef.current && canvasContainerRef.current) {
+        const container = canvasContainerRef.current;
+        const containerRect = container.getBoundingClientRect();
+
+        const newWidth = Math.max(containerRect.width, 800);
+        const newHeight = Math.max(containerRect.height, 600);
+
+        fabricCanvasRef.current.setWidth(newWidth);
+        fabricCanvasRef.current.setHeight(newHeight);
+        fabricCanvasRef.current.renderAll();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    // Initial resize after mount
+    const timeoutId = setTimeout(handleResize, 100);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  // Throttled cursor emission to prevent spam
   const throttledCursorEmit = useThrottle((x, y) => {
     socket.emit("cursor-move", {
       roomId,
@@ -60,6 +102,242 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
       visible: true,
     });
   }, 50); // 50ms throttle = ~20fps
+
+  // Pan and zoom handlers for infinite canvas
+  const handleWheel = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!fabricCanvasRef.current) return;
+
+      const canvas = fabricCanvasRef.current;
+      const delta = e.deltaY > 0 ? 0.95 : 1.05;
+      let newZoom = canvas.getZoom() * delta;
+      newZoom = Math.max(0.1, Math.min(10, newZoom)); // Clamp zoom
+
+      canvas.zoomToPoint({ x: e.offsetX, y: e.offsetY }, newZoom);
+
+      // Emit viewport update after zooming
+      const newViewport = canvas.viewportTransform;
+      socket.emit("viewport:update", { roomId, viewport: newViewport });
+
+      setZoomLevel(newZoom); // Update local state for UI
+    },
+    [roomId, socket]
+  );
+
+  const handleMouseDown = useCallback((e) => {
+    if (
+      e.button === 1 ||
+      (e.button === 0 && e.ctrlKey) ||
+      (e.button === 0 && e.metaKey)
+    ) {
+      // Middle mouse or Ctrl+click for panning
+      e.preventDefault();
+      setIsPanning(true);
+      setLastPanPoint({ x: e.clientX, y: e.clientY });
+    }
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e) => {
+      const canvas = fabricCanvasRef.current;
+      const container = canvasContainerRef.current;
+      if (!canvas || !container) return;
+
+      if (isPanning) {
+        const deltaX = e.clientX - lastPanPoint.x;
+        const deltaY = e.clientY - lastPanPoint.y;
+
+        setLastPanPoint({ x: e.clientX, y: e.clientY });
+        canvas.relativePan({ x: deltaX, y: deltaY });
+      }
+
+      // Always emit the correct cursor position in canvas coordinates
+      const rect = container.getBoundingClientRect();
+      const containerX = e.clientX - rect.left;
+      const containerY = e.clientY - rect.top;
+
+      const invertedVpt = fabricUtil.invertTransform(canvas.viewportTransform);
+      const canvasPoint = fabricUtil.transformPoint(
+        { x: containerX, y: containerY },
+        invertedVpt
+      );
+
+      throttledCursorEmit(canvasPoint.x, canvasPoint.y);
+    },
+    [isPanning, lastPanPoint, throttledCursorEmit]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsPanning(false);
+
+    // After panning, emit the final viewport state
+    if (fabricCanvasRef.current) {
+      const newViewport = fabricCanvasRef.current.viewportTransform;
+      socket.emit("viewport:update", { roomId, viewport: newViewport });
+    }
+  }, [roomId, socket]);
+
+  const handleMouseLeave = useCallback(() => {
+    socket.emit("cursor-leave", { roomId });
+  }, [roomId, socket]);
+
+  // Mobile touch handlers
+  const handleTouchStart = useCallback((e) => {
+    if (!fabricCanvasRef.current || e.touches.length > 2) return;
+    const canvas = fabricCanvasRef.current;
+
+    // Prevent accidental drawing when starting a multi-touch gesture
+    if (e.touches.length > 1) {
+      if (canvas.isDrawingMode) {
+        wasDrawingMode.current = true;
+        canvas.isDrawingMode = false;
+      }
+    }
+
+    if (e.touches.length === 2) {
+      // Two-finger gesture: can be pan or zoom
+      setIsPanning(true);
+      // Set initial pan point as the midpoint of the two touches
+      setLastPanPoint({
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+      });
+
+      // Set initial pinch distance for zooming
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchStartDistance.current = Math.sqrt(dx * dx + dy * dy);
+    }
+    // Note: One-finger touch is handled by fabric's native 'mouse:down' for drawing
+  }, []);
+
+  const handleTouchMove = useCallback(
+    (e) => {
+      if (!fabricCanvasRef.current) return;
+      e.preventDefault(); // Prevent scrolling
+
+      const canvas = fabricCanvasRef.current;
+      const container = canvasContainerRef.current;
+      if (!canvas || !container) return;
+
+      // Handle one-finger drawing cursor emit
+      if (e.touches.length === 1 && canvas.isDrawingMode) {
+        const touch = e.touches[0];
+        const rect = container.getBoundingClientRect();
+        const containerX = touch.clientX - rect.left;
+        const containerY = touch.clientY - rect.top;
+
+        const invertedVpt = fabricUtil.invertTransform(
+          canvas.viewportTransform
+        );
+        const canvasPoint = fabricUtil.transformPoint(
+          { x: containerX, y: containerY },
+          invertedVpt
+        );
+        throttledCursorEmit(canvasPoint.x, canvasPoint.y);
+        return; // Exit early, let fabric handle the drawing
+      }
+
+      // Handle two-finger pan and zoom
+      if (e.touches.length === 2 && isPanning) {
+        // --- PAN LOGIC ---
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        const deltaX = midX - lastPanPoint.x;
+        const deltaY = midY - lastPanPoint.y;
+        setLastPanPoint({ x: midX, y: midY });
+        canvas.relativePan({ x: deltaX, y: deltaY });
+
+        // --- ZOOM LOGIC ---
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const currentDistance = Math.sqrt(dx * dx + dy * dy);
+
+        // Add a threshold to differentiate pan from zoom
+        if (Math.abs(currentDistance - touchStartDistance.current) > 5) {
+          const zoomFactor = currentDistance / touchStartDistance.current;
+          let newZoom = canvas.getZoom() * zoomFactor;
+          newZoom = Math.max(0.1, Math.min(10, newZoom)); // Clamp zoom
+
+          const rect = container.getBoundingClientRect();
+          canvas.zoomToPoint(
+            { x: midX - rect.left, y: midY - rect.top },
+            newZoom
+          );
+          setZoomLevel(newZoom);
+
+          // Update distance for next move event
+          touchStartDistance.current = currentDistance;
+        }
+      }
+    },
+    [isPanning, lastPanPoint]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    setIsPanning(false);
+    if (fabricCanvasRef.current) {
+      // Restore drawing mode if it was active before the gesture
+      if (wasDrawingMode.current) {
+        fabricCanvasRef.current.isDrawingMode = true;
+        wasDrawingMode.current = false;
+      }
+
+      const newViewport = fabricCanvasRef.current.viewportTransform;
+      socket.emit("viewport:update", { roomId, viewport: newViewport });
+    }
+  }, [roomId, socket]);
+
+  // Add event listeners for pan and zoom
+  useEffect(() => {
+    const container = canvasContainerRef.current;
+    if (container) {
+      // Mouse events
+      container.addEventListener("wheel", handleWheel, { passive: false });
+      container.addEventListener("mousedown", handleMouseDown);
+      container.addEventListener("mousemove", handleMouseMove);
+      container.addEventListener("mouseup", handleMouseUp);
+
+      // Touch events
+      container.addEventListener("touchstart", handleTouchStart, {
+        passive: false,
+      });
+      container.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
+      container.addEventListener("touchend", handleTouchEnd);
+
+      const leaveHandler = () => {
+        handleMouseUp(); // Stop panning
+        handleMouseLeave(); // Hide cursor
+      };
+      container.addEventListener("mouseleave", leaveHandler);
+
+      return () => {
+        // Mouse events cleanup
+        container.removeEventListener("wheel", handleWheel);
+        container.removeEventListener("mousedown", handleMouseDown);
+        container.removeEventListener("mousemove", handleMouseMove);
+        container.removeEventListener("mouseup", handleMouseUp);
+        container.removeEventListener("mouseleave", leaveHandler);
+
+        // Touch events cleanup
+        container.removeEventListener("touchstart", handleTouchStart);
+        container.removeEventListener("touchmove", handleTouchMove);
+        container.removeEventListener("touchend", handleTouchEnd);
+      };
+    }
+  }, [
+    handleWheel,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleMouseLeave,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+  ]);
 
   // Function to update canvas tool settings
   const updateCanvasSettings = (canvas) => {
@@ -163,13 +441,16 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
   const handleSaveAsPNG = () => {
     if (fabricCanvasRef.current) {
       const dataURL = fabricCanvasRef.current.toDataURL({
-        format: 'png',
+        format: "png",
         quality: 1.0,
         multiplier: 2, // Higher resolution for better quality
       });
-      
-      const link = document.createElement('a');
-      link.download = `canvas-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.png`;
+
+      const link = document.createElement("a");
+      link.download = `canvas-${new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace(/:/g, "-")}.png`;
       link.href = dataURL;
       link.click();
     }
@@ -179,13 +460,16 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
   const handleSaveAsJPG = () => {
     if (fabricCanvasRef.current) {
       const dataURL = fabricCanvasRef.current.toDataURL({
-        format: 'jpeg',
+        format: "jpeg",
         quality: 0.8,
         multiplier: 2, // Higher resolution for better quality
       });
-      
-      const link = document.createElement('a');
-      link.download = `canvas-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.jpg`;
+
+      const link = document.createElement("a");
+      link.download = `canvas-${new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace(/:/g, "-")}.jpg`;
       link.href = dataURL;
       link.click();
     }
@@ -237,10 +521,21 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
     // Prevent double initialization in React StrictMode
     if (fabricCanvasRef.current) return;
 
-    // Initialize Fabric.js canvas
+    // Get container dimensions for full-size canvas
+    const container = canvasContainerRef.current;
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const canvasWidth = Math.max(containerRect.width || window.innerWidth, 800);
+    const canvasHeight = Math.max(
+      containerRect.height || window.innerHeight,
+      600
+    );
+
+    // Initialize Fabric.js canvas with full size
     const canvas = new Canvas(canvasRef.current, {
-      width: 800,
-      height: 500,
+      width: canvasWidth,
+      height: canvasHeight,
       backgroundColor: "white",
     });
 
@@ -429,6 +724,8 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
         strokeWidth: currentStrokeWidth,
         strokeLineCap: "round",
         strokeLineJoin: "round",
+        selectable: false,
+        evented: false,
       });
       canvas.renderAll();
 
@@ -451,6 +748,8 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
           fill: pathData.fill,
           strokeLineCap: pathData.strokeLineCap || "round",
           strokeLineJoin: pathData.strokeLineJoin || "round",
+          selectable: false,
+          evented: false,
         });
         canvas.add(path);
         canvas.renderAll();
@@ -499,6 +798,8 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
             fill: pathData.fill,
             strokeLineCap: pathData.strokeLineCap || "round",
             strokeLineJoin: pathData.strokeLineJoin || "round",
+            selectable: false,
+            evented: false,
           });
           canvas.add(path);
         } else if (
@@ -601,26 +902,143 @@ const SimpleCanvas = ({ socket, roomId, activeTool, brushSize, brushColor, onCan
   }, [socket, roomId]);
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-8">
-      {/* Canvas Container */}
+    <div className="w-full h-full relative bg-gray-50">
+      {/* Full-Size Canvas Container */}
       <div
         ref={canvasContainerRef}
-        className="relative border-2 border-gray-300 rounded-xl shadow-xl bg-white overflow-hidden"
+        className="absolute inset-0 bg-white cursor-crosshair"
+        style={{
+          cursor:
+            activeTool === "pen"
+              ? "crosshair"
+              : activeTool === "eraser"
+              ? "grab"
+              : activeTool === "line"
+              ? "crosshair"
+              : activeTool === "rectangle"
+              ? "crosshair"
+              : activeTool === "circle"
+              ? "crosshair"
+              : "default",
+        }}
       >
-        <canvas ref={canvasRef} />
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full touch-none"
+          style={{ touchAction: "none" }}
+        />
 
         {/* Render remote cursors */}
-        {Array.from(remoteCursors.values()).map((cursor) => (
-          <Cursor
-            key={cursor.userId}
-            userId={cursor.userId}
-            name={cursor.name}
-            color={cursor.color}
-            x={cursor.x}
-            y={cursor.y}
-            visible={cursor.visible}
-          />
-        ))}
+        {Array.from(remoteCursors.values()).map((cursor) => {
+          if (!fabricCanvasRef.current || !cursor.visible) {
+            return null;
+          }
+          const canvas = fabricCanvasRef.current;
+          const vpt = canvas.viewportTransform;
+
+          const screenPoint = fabricUtil.transformPoint(
+            { x: cursor.x, y: cursor.y },
+            vpt
+          );
+
+          return (
+            <Cursor
+              key={cursor.userId}
+              userId={cursor.userId}
+              name={cursor.name}
+              color={cursor.color}
+              x={screenPoint.x}
+              y={screenPoint.y}
+              visible={cursor.visible}
+            />
+          );
+        })}
+
+        {/* Infinite Canvas Grid Background */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-30"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+              linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+            `,
+            backgroundSize: "20px 20px",
+          }}
+        />
+
+        {/* Canvas Info Overlay */}
+        <div className="absolute top-4 right-4 bg-black bg-opacity-75 text-white px-3 py-2 rounded-lg text-xs font-medium pointer-events-none">
+          <div className="flex items-center space-x-2">
+            <span className="capitalize">{activeTool}</span>
+            {(activeTool === "pen" || activeTool === "eraser") && (
+              <>
+                <span>•</span>
+                <span>{brushSize}px</span>
+              </>
+            )}
+            <span>•</span>
+            <span style={{ color: brushColor }}>●</span>
+            <span>•</span>
+            <span>{Math.round(zoomLevel * 100)}%</span>
+          </div>
+        </div>
+
+        {/* Zoom Controls */}
+        <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-30">
+          <button
+            onClick={() => {
+              const newZoom = Math.min(5, zoomLevel * 1.2);
+              setZoomLevel(newZoom);
+              if (fabricCanvasRef.current) {
+                fabricCanvasRef.current.setZoom(newZoom);
+                fabricCanvasRef.current.renderAll();
+              }
+            }}
+            className="w-10 h-10 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-50 flex items-center justify-center text-lg font-bold text-gray-700"
+            title="Zoom In"
+          >
+            +
+          </button>
+          <button
+            onClick={() => {
+              const newZoom = Math.max(0.1, zoomLevel * 0.8);
+              setZoomLevel(newZoom);
+              if (fabricCanvasRef.current) {
+                fabricCanvasRef.current.setZoom(newZoom);
+                fabricCanvasRef.current.renderAll();
+              }
+            }}
+            className="w-10 h-10 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-50 flex items-center justify-center text-lg font-bold text-gray-700"
+            title="Zoom Out"
+          >
+            −
+          </button>
+          <button
+            onClick={() => {
+              setZoomLevel(1);
+              setPanOffset({ x: 0, y: 0 });
+              if (fabricCanvasRef.current) {
+                fabricCanvasRef.current.setZoom(1);
+                fabricCanvasRef.current.setViewportTransform([
+                  1, 0, 0, 1, 0, 0,
+                ]);
+                fabricCanvasRef.current.renderAll();
+              }
+            }}
+            className="w-10 h-10 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-50 flex items-center justify-center text-xs font-medium text-gray-700"
+            title="Reset View"
+          >
+            ⌂
+          </button>
+        </div>
+
+        {/* Pan Instructions */}
+        <div className="absolute bottom-4 left-4 bg-black bg-opacity-75 text-white px-3 py-2 rounded-lg text-xs pointer-events-none">
+          <div className="text-center">
+            <div>Scroll: Zoom</div>
+            <div>Ctrl+Drag: Pan</div>
+          </div>
+        </div>
       </div>
     </div>
   );

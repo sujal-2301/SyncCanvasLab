@@ -20,7 +20,12 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
     try {
       await onJoinRoom(roomCode.trim().toUpperCase());
     } catch (err) {
-      setError(err.message || "Failed to join room");
+      // Provide more specific feedback for common errors
+      if (err.message.includes("Room not found")) {
+        setError("Room not found. Please check the code and try again.");
+      } else {
+        setError(err.message || "Failed to join the room.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -48,7 +53,9 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
             🎨
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">SyncCanvasLab</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            SyncCanvasLab
+          </h1>
           <p className="text-gray-600 text-sm">
             Create or join a room to start collaborating
           </p>
@@ -93,7 +100,10 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {activeTab === "join" && (
             <form onSubmit={handleJoinRoom} className="space-y-4">
               <div>
-                <label htmlFor="roomCode" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="roomCode"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Room Code
                 </label>
                 <input
@@ -118,9 +128,24 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Joining...
                   </>
@@ -135,7 +160,10 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {activeTab === "create" && (
             <form onSubmit={handleCreateRoom} className="space-y-4">
               <div>
-                <label htmlFor="roomName" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="roomName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Room Name (Optional)
                 </label>
                 <input
@@ -160,9 +188,24 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Creating...
                   </>
@@ -179,7 +222,8 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           <div className="flex items-start gap-3 text-sm text-gray-600">
             <span className="text-lg">💡</span>
             <p>
-              <strong className="text-gray-900">Tip:</strong> Share your room code with others to collaborate in real-time!
+              <strong className="text-gray-900">Tip:</strong> Share your room
+              code with others to collaborate in real-time!
             </p>
           </div>
         </div>

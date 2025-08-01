@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: /^http:\/\/localhost:\d+$/,
+    origin: [/^http:\/\/localhost:\d+$/, /^http:\/\/192\.168\.\d+\.\d+:\d+$/],
     methods: ["GET", "POST"],
   },
 });
@@ -65,6 +65,7 @@ const createRoom = (roomName, creatorSocketId = null) => {
     creatorSocketId,
     users: new Map(),
     canvasData: [], // Store drawing events
+    viewportTransform: [1, 0, 0, 1, 0, 0], // Default viewport
   };
   rooms.set(roomCode, room);
   console.log(`Room created: ${roomCode} - "${roomName}"`);
@@ -248,8 +249,11 @@ io.on("connection", (socket) => {
       room.users.set(socket.id, userInfo);
       users.set(socket.id, { ...userInfo, roomId });
 
-      // Send existing canvas data to the new user
-      socket.emit("canvas-data", room.canvasData);
+      // Send existing canvas data and viewport to the new user
+      socket.emit("canvas-state", {
+        drawingData: room.canvasData,
+        viewport: room.viewportTransform,
+      });
 
       // Send all current users to the new user
       const allUsers = Array.from(room.users.values());
@@ -280,6 +284,15 @@ io.on("connection", (socket) => {
     } catch (error) {
       console.error("Error joining room:", error);
       if (callback) callback({ success: false, error: "Failed to join room" });
+    }
+  });
+
+  // Handle viewport updates
+  socket.on("viewport:update", ({ roomId, viewport }) => {
+    const room = rooms.get(roomId);
+    if (room) {
+      room.viewportTransform = viewport;
+      socket.to(roomId).emit("viewport:updated", viewport);
     }
   });
 
@@ -414,6 +427,6 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
