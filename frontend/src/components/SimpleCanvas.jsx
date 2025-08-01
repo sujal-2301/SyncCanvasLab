@@ -142,6 +142,38 @@ const SimpleCanvas = ({ socket, roomId }) => {
     }
   };
 
+  // Function to save canvas as PNG
+  const handleSaveAsPNG = () => {
+    if (fabricCanvasRef.current) {
+      const dataURL = fabricCanvasRef.current.toDataURL({
+        format: 'png',
+        quality: 1.0,
+        multiplier: 2, // Higher resolution for better quality
+      });
+      
+      const link = document.createElement('a');
+      link.download = `canvas-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.png`;
+      link.href = dataURL;
+      link.click();
+    }
+  };
+
+  // Function to save canvas as JPG
+  const handleSaveAsJPG = () => {
+    if (fabricCanvasRef.current) {
+      const dataURL = fabricCanvasRef.current.toDataURL({
+        format: 'jpeg',
+        quality: 0.8,
+        multiplier: 2, // Higher resolution for better quality
+      });
+      
+      const link = document.createElement('a');
+      link.download = `canvas-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.jpg`;
+      link.href = dataURL;
+      link.click();
+    }
+  };
+
   // Update refs when state changes to avoid stale closures
   useEffect(() => {
     activeToolRef.current = activeTool;
@@ -562,6 +594,8 @@ const SimpleCanvas = ({ socket, roomId }) => {
         brushColor={brushColor}
         setBrushColor={setBrushColor}
         onClearCanvas={handleClearCanvas}
+        onSaveAsPNG={handleSaveAsPNG}
+        onSaveAsJPG={handleSaveAsJPG}
       />
 
       {/* Canvas Container */}

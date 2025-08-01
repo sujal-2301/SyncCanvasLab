@@ -7,7 +7,9 @@ const DrawingToolbar = ({
   setBrushSize, 
   brushColor, 
   setBrushColor,
-  onClearCanvas 
+  onClearCanvas,
+  onSaveAsPNG,
+  onSaveAsJPG 
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -147,10 +149,17 @@ const DrawingToolbar = ({
           </button>
           <button 
             className="action-btn save-btn"
-            onClick={() => alert('Save feature coming soon!')}
-            title="Save canvas"
+            onClick={onSaveAsPNG}
+            title="Save as PNG (high quality)"
           >
-            💾 Save
+            💾 Save PNG
+          </button>
+          <button 
+            className="action-btn save-btn"
+            onClick={onSaveAsJPG}
+            title="Save as JPG (smaller file)"
+          >
+            📄 Save JPG
           </button>
         </div>
       </div>
