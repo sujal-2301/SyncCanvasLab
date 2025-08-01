@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import io from "socket.io-client";
 import SimpleCanvas from "./components/SimpleCanvas";
 import RoomManager from "./components/RoomManager";
-import RoomInfo from "./components/RoomInfo";
 import DrawingToolbar from "./components/DrawingToolbar";
 import InfoModal from "./components/InfoModal";
 
@@ -49,6 +48,8 @@ function App() {
       const data = await response.json();
       if (data.success) {
         console.log("Room created:", data.room);
+        // Manually set the room to trigger UI transition immediately
+        setCurrentRoom(data.room);
         await joinRoom(data.room.id);
       } else {
         throw new Error(data.error);
