@@ -41,8 +41,8 @@ A real-time collaborative canvas application built with React, Node.js, and Sock
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/synccanvaslab.git
-   cd synccanvaslab
+   git clone https://github.com/sujal-2301/SyncCanvasLab.git
+   cd SyncCanvasLab
    ```
 
 2. **Install backend dependencies**
