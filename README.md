@@ -1,6 +1,6 @@
-# 🎨 Collaborative Whiteboard
+# 🎨 SyncCanvasLab
 
-A real-time collaborative whiteboard application built with React, Node.js, and Socket.IO. Create rooms, invite others, and draw together in real-time!
+A real-time collaborative canvas application built with React, Node.js, and Socket.IO. Create rooms, invite others, and draw together in real-time!
 
 ![Demo](https://img.shields.io/badge/Status-Live-green) ![React](https://img.shields.io/badge/React-18.2.0-blue) ![Node.js](https://img.shields.io/badge/Node.js-21.0.0-green) ![Socket.IO](https://img.shields.io/badge/Socket.IO-4.7.2-lightblue)
 
@@ -41,8 +41,8 @@ A real-time collaborative whiteboard application built with React, Node.js, and 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/collaborative-whiteboard.git
-   cd collaborative-whiteboard
+   git clone https://github.com/yourusername/synccanvaslab.git
+   cd synccanvaslab
    ```
 
 2. **Install backend dependencies**
@@ -148,7 +148,7 @@ A real-time collaborative whiteboard application built with React, Node.js, and 
 ## 📁 Project Structure
 
 ```
-collaborative-whiteboard/
+synccanvaslab/
 ├── backend/
 │   ├── index.js              # Main server file
 │   ├── package.json          # Backend dependencies

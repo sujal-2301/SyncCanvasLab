@@ -45,7 +45,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
     <div className="room-manager">
       <div className="room-manager-container">
         <div className="room-manager-header">
-          <h1 className="room-manager-title">🎨 Collaborative Whiteboard</h1>
+                      <h1 className="room-manager-title">🎨 SyncCanvasLab</h1>
           <p className="room-manager-subtitle">
             Create or join a room to start collaborating
           </p>
@@ -112,7 +112,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                 id="roomName"
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
-                placeholder="My Awesome Whiteboard"
+                placeholder="My Awesome Canvas"
                 maxLength={50}
                 className="room-form-input"
                 disabled={isLoading}

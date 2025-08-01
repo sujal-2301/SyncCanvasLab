@@ -17,8 +17,8 @@ const RoomInfo = ({ roomId, roomName, users, onLeaveRoom }) => {
 
   const handleShareRoom = async () => {
     const shareData = {
-      title: `Join my whiteboard: ${roomName}`,
-      text: `Join my collaborative whiteboard session! Room Code: ${roomId}`,
+      title: `Join my canvas: ${roomName}`,
+      text: `Join my collaborative canvas session! Room Code: ${roomId}`,
       url: window.location.href,
     };
 
@@ -28,7 +28,7 @@ const RoomInfo = ({ roomId, roomName, users, onLeaveRoom }) => {
       } else {
         // Fallback to copying
         await navigator.clipboard.writeText(
-          `Join my whiteboard: ${roomName}\nRoom Code: ${roomId}\n${window.location.href}`
+          `Join my canvas: ${roomName}\nRoom Code: ${roomId}\n${window.location.href}`
         );
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);

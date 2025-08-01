@@ -139,7 +139,7 @@ function App() {
     );
   }
 
-  // Show the whiteboard interface when in a room
+  // Show the canvas interface when in a room
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
       {/* Room Info Header */}
