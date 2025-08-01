@@ -28,14 +28,27 @@ const Canvas = ({ socket, tool, color, brushSize, roomId }) => {
     // Handle drawing events
     canvas.on("path:created", (e) => {
       const path = e.path;
+      
+      // Use current brush settings instead of path object properties
+      // This ensures consistent stroke width across all clients
+      const currentStrokeWidth = tool === "eraser" ? brushSize * 2 : brushSize;
+      const currentStroke = tool === "eraser" ? "white" : color;
+      
       const pathData = {
         type: "path",
         path: path.path,
         pathOffset: path.pathOffset,
-        stroke: path.stroke,
-        strokeWidth: path.strokeWidth,
+        stroke: currentStroke,
+        strokeWidth: currentStrokeWidth,
         fill: path.fill,
       };
+
+      // Also update the local path to match current settings
+      path.set({
+        stroke: currentStroke,
+        strokeWidth: currentStrokeWidth,
+      });
+      canvas.renderAll();
 
       // Emit drawing data to other users
       socket.emit("drawing", {

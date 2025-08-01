@@ -350,13 +350,22 @@ const SimpleCanvas = ({ socket, roomId }) => {
       const path = e.path;
       console.log("Path created, emitting to server");
 
+      // Use current brush settings instead of path object properties
+      // This ensures consistent stroke width across all clients
       const pathData = {
         type: "path:created",
         path: path.path,
-        stroke: path.stroke,
-        strokeWidth: path.strokeWidth,
+        stroke: brushColorRef.current,
+        strokeWidth: brushSizeRef.current,
         fill: path.fill,
       };
+
+      // Also update the local path to match current settings
+      path.set({
+        stroke: brushColorRef.current,
+        strokeWidth: brushSizeRef.current,
+      });
+      canvas.renderAll();
 
       // Emit drawing data to other users
       socket.emit("drawing", {
