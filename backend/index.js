@@ -410,14 +410,16 @@ io.on("connection", (socket) => {
         console.log(`Room ${roomId} deleted - no users remaining`);
       }
     } else {
-      console.log(`User ${socket.id} not found in room ${roomId} for leave-room`);
+      console.log(
+        `User ${socket.id} not found in room ${roomId} for leave-room`
+      );
     }
 
     // Clean up user data last
     users.delete(socket.id);
   });
 
-    // Handle disconnection
+  // Handle disconnection
   socket.on("disconnect", () => {
     const userInfo = users.get(socket.id);
     const userName = userInfo ? userInfo.name : socket.id;
@@ -428,7 +430,7 @@ io.on("connection", (socket) => {
       if (room.users.has(socket.id)) {
         const user = room.users.get(socket.id);
         room.users.delete(socket.id);
-        
+
         // Notify others in the room
         socket.to(roomId).emit("user-left", {
           userId: socket.id,
@@ -484,7 +486,9 @@ io.on("connection", (socket) => {
       // Clean up empty rooms
       if (room.users.size === 0) {
         rooms.delete(roomId);
-        console.log(`Room ${roomId} deleted - no users remaining after force leave`);
+        console.log(
+          `Room ${roomId} deleted - no users remaining after force leave`
+        );
       }
     }
 
