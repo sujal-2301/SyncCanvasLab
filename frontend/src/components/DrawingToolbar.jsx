@@ -94,18 +94,74 @@ const DrawingToolbar = ({
 
           {/* Size Slider */}
           <div className="flex-1 flex items-center gap-2 min-w-0">
-            <input
-              type="range"
-              min="1"
-              max="50"
-              value={brushSize}
-              onChange={(e) => setBrushSize(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-            <span className="text-sm font-medium text-gray-900 w-8 text-center">
-              {brushSize}
-            </span>
+            <div className="flex-1 relative">
+              <input
+                type="range"
+                min="1"
+                max="50"
+                value={brushSize}
+                onChange={(e) => setBrushSize(parseInt(e.target.value))}
+                className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-mobile"
+                style={{
+                  background: `linear-gradient(to right, #6366f1 0%, #6366f1 ${
+                    ((brushSize - 1) / 49) * 100
+                  }%, #e2e8f0 ${((brushSize - 1) / 49) * 100}%, #e2e8f0 100%)`,
+                }}
+              />
+              {/* Slider Track Indicator */}
+              <div className="absolute top-0 left-0 right-0 h-3 bg-gray-100 rounded-lg opacity-50 pointer-events-none">
+                <div 
+                  className="h-full bg-primary-500 rounded-lg transition-all duration-200"
+                  style={{ width: `${((brushSize - 1) / 49) * 100}%` }}
+                />
+              </div>
+              {/* Size Markers */}
+              <div className="absolute -bottom-4 left-0 right-0 flex justify-between text-xs text-gray-400 pointer-events-none">
+                <span>1</span>
+                <span>25</span>
+                <span>50</span>
+              </div>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm font-bold text-gray-900 w-8 text-center">
+                {brushSize}
+              </span>
+              <div
+                className="rounded-full border-2 border-gray-300 bg-white"
+                style={{
+                  width: Math.min(brushSize, 20),
+                  height: Math.min(brushSize, 20),
+                  backgroundColor: brushColor,
+                }}
+              />
+            </div>
           </div>
+        </div>
+
+        {/* Mobile Size Presets */}
+        <div className="flex gap-1 mb-2">
+          {[1, 5, 10, 20, 30].map((size) => (
+            <button
+              key={size}
+              className={`flex items-center justify-center px-2 py-1 border rounded-md text-xs font-medium transition-all duration-200 ${
+                brushSize === size
+                  ? "border-primary-500 bg-primary-50 text-primary-700"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+              }`}
+              onClick={() => setBrushSize(size)}
+              title={`${size}px`}
+            >
+              <div
+                className="rounded-full mr-1"
+                style={{
+                  width: Math.min(size, 12),
+                  height: Math.min(size, 12),
+                  backgroundColor: brushColor,
+                }}
+              />
+              {size}
+            </button>
+          ))}
         </div>
 
         {/* Mobile Actions Row */}
