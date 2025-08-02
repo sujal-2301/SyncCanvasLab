@@ -127,10 +127,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
           {/* Join Room Form */}
           {activeTab === "join" && (
-            <form
-              onSubmit={handleJoinRoom}
-              className="space-y-3 sm:space-y-4"
-            >
+            <form onSubmit={handleJoinRoom} className="space-y-3 sm:space-y-4">
               {/* Room Code Section */}
               <div className="text-center">
                 <div className="mb-2 sm:mb-3">
@@ -161,7 +158,9 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                     spellCheck="false"
                   />
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4">
-                    <span className="text-gray-400 text-sm sm:text-base">🔑</span>
+                    <span className="text-gray-400 text-sm sm:text-base">
+                      🔑
+                    </span>
                   </div>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4">
                     <span className="text-gray-400 text-xs sm:text-sm font-mono">
