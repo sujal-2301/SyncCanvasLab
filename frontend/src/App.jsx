@@ -111,11 +111,12 @@ function App() {
 
   const leaveRoom = () => {
     if (currentRoom) {
+      console.log(`Leaving room: ${currentRoom.id}`);
       socket.emit("leave-room", currentRoom.id);
       setCurrentRoom(null);
       setUsers([]);
       setCurrentUser(null);
-      console.log("Left room");
+      console.log("Left room and cleared state");
     }
   };
 
@@ -149,7 +150,11 @@ function App() {
 
     socket.on("user-left", (data) => {
       console.log("User left:", data);
-      setUsers((prev) => prev.filter((user) => user.id !== data.userId));
+      setUsers((prev) => {
+        const filtered = prev.filter((user) => user.id !== data.userId);
+        console.log(`Updated users list: ${filtered.length} users remaining`);
+        return filtered;
+      });
     });
 
     return () => {

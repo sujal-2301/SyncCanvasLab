@@ -387,11 +387,11 @@ io.on("connection", (socket) => {
     if (room && room.users.has(socket.id)) {
       const user = room.users.get(socket.id);
 
-      // Remove user from room
+      // Remove user from room first
       room.users.delete(socket.id);
       socket.leave(roomId);
 
-      // Notify others in the room
+      // Notify others in the room BEFORE cleaning up user data
       socket.to(roomId).emit("user-left", {
         userId: socket.id,
         name: user.name,
@@ -400,9 +400,15 @@ io.on("connection", (socket) => {
       console.log(
         `User ${user.name} (${socket.id}) left room ${roomId}. Remaining users: ${room.users.size}`
       );
+
+      // Clean up empty rooms
+      if (room.users.size === 0) {
+        rooms.delete(roomId);
+        console.log(`Room ${roomId} deleted - no users remaining`);
+      }
     }
 
-    // Clean up user data
+    // Clean up user data last
     users.delete(socket.id);
   });
 
@@ -412,24 +418,32 @@ io.on("connection", (socket) => {
     const userName = userInfo ? userInfo.name : socket.id;
     console.log("User disconnected:", userName);
 
-    // Remove user from global users map
-    users.delete(socket.id);
-
-    // Remove user from all rooms
+    // Remove user from all rooms first
     for (const [roomId, room] of rooms.entries()) {
       if (room.users.has(socket.id)) {
+        const user = room.users.get(socket.id);
         room.users.delete(socket.id);
+        
+        // Notify others in the room
         socket.to(roomId).emit("user-left", {
           userId: socket.id,
-          userCount: room.users.size,
+          name: user.name,
         });
+
+        console.log(
+          `User ${user.name} (${socket.id}) disconnected from room ${roomId}. Remaining users: ${room.users.size}`
+        );
 
         // Clean up empty rooms
         if (room.users.size === 0) {
           rooms.delete(roomId);
+          console.log(`Room ${roomId} deleted - no users remaining after disconnect`);
         }
       }
     }
+
+    // Remove user from global users map last
+    users.delete(socket.id);
   });
 });
 
