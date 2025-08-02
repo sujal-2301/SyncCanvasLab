@@ -18,10 +18,8 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
       setError("Please enter a room code");
       return;
     }
-
     setIsLoading(true);
     setError("");
-
     try {
       await onJoinRoom(roomCode.trim().toUpperCase(), username.trim());
     } catch (err) {
@@ -43,7 +41,6 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
     }
     setIsLoading(true);
     setError("");
-
     try {
       await onCreateRoom(roomName.trim() || "Untitled Room", username.trim());
     } catch (err) {
@@ -76,230 +73,219 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           </p>
         </div>
 
-        {/* Body */}
-        <div className="px-4 sm:px-6 flex-1 flex flex-col justify-center">
-          {/* Top Section */}
-          <div className="space-y-3">
-            {/* Username Input */}
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-semibold text-gray-900 mb-1"
-              >
-                👤 Your Name
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your name..."
-                maxLength={25}
-                className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm"
-                disabled={isLoading}
-              />
-            </div>
-
-            {/* Tabs */}
-            <div className="flex bg-gray-100 rounded-lg p-1">
-              <button
-                className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
-                  activeTab === "join"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("join")}
-                disabled={isLoading}
-              >
-                🚪 Join
-              </button>
-              <button
-                className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
-                  activeTab === "create"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("create")}
-                disabled={isLoading}
-              >
-                ➕ Create
-              </button>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className="p-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-md text-xs sm:text-sm flex items-center gap-2 animate-slide-in">
-                <span>⚠️</span>
-                <span>{error}</span>
-              </div>
-            )}
+        {/* Body: evenly space name, tabs, error, and form */}
+        <div className="px-4 sm:px-6 flex-1 flex flex-col justify-evenly">
+          {/* Your Name */}
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-semibold text-gray-900 mb-1"
+            >
+              👤 Your Name
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your name..."
+              maxLength={25}
+              className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm"
+              disabled={isLoading}
+            />
           </div>
 
-          {/* Form Content */}
-          <div className="flex-1 flex items-center justify-center">
-            <div className="w-full space-y-4">
-              {/* Join Room Form */}
-              {activeTab === "join" && (
-                <form onSubmit={handleJoinRoom} className="space-y-4">
-                  <div className="text-center">
-                    <div className="mb-1 sm:mb-2">
-                      <label
-                        htmlFor="roomCode"
-                        className="block text-sm sm:text-base font-semibold text-gray-900 mb-1"
-                      >
-                        📱 Enter Room Code
-                      </label>
-                      <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">
-                        Ask the room creator to share their 6-character room
-                        code
-                      </p>
-                    </div>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        id="roomCode"
-                        value={roomCode}
-                        onChange={(e) => setRoomCode(e.target.value)}
-                        placeholder="ABC123"
-                        maxLength={6}
-                        className="w-full px-4 sm:px-6 py-2 border-2 border-gray-300 rounded-xl text-center font-mono text-base sm:text-lg uppercase tracking-wider font-bold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 bg-white shadow-sm"
-                        disabled={isLoading}
-                        autoFocus
-                        autoComplete="off"
-                        spellCheck="false"
+          {/* Tabs */}
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
+                activeTab === "join"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+              onClick={() => setActiveTab("join")}
+              disabled={isLoading}
+            >
+              🚪 Join
+            </button>
+            <button
+              className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
+                activeTab === "create"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+              onClick={() => setActiveTab("create")}
+              disabled={isLoading}
+            >
+              ➕ Create
+            </button>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="p-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-md text-xs sm:text-sm flex items-center gap-2 animate-slide-in">
+              <span>⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          {activeTab === "join" ? (
+            <form onSubmit={handleJoinRoom} className="space-y-4 w-full">
+              {/* Room Code */}
+              <div className="text-center">
+                <div className="mb-1 sm:mb-2">
+                  <label
+                    htmlFor="roomCode"
+                    className="block text-sm sm:text-base font-semibold text-gray-900 mb-1"
+                  >
+                    📱 Enter Room Code
+                  </label>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">
+                    Ask the room creator to share their 6-character room code
+                  </p>
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="roomCode"
+                    value={roomCode}
+                    onChange={(e) => setRoomCode(e.target.value)}
+                    placeholder="ABC123"
+                    maxLength={6}
+                    className="w-full px-4 sm:px-6 py-2 border-2 border-gray-300 rounded-xl text-center font-mono text-base sm:text-lg uppercase tracking-wider font-bold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 bg-white shadow-sm"
+                    disabled={isLoading}
+                    autoFocus
+                    autoComplete="off"
+                    spellCheck="false"
+                  />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4">
+                    <span className="text-gray-400 text-sm sm:text-base">
+                      🔑
+                    </span>
+                  </div>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4">
+                    <span className="text-gray-400 text-xs sm:text-sm font-mono">
+                      {roomCode.length}/6
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-1 flex justify-center">
+                  <div className="flex gap-1 sm:gap-2">
+                    {Array.from({ length: 6 }, (_, i) => (
+                      <div
+                        key={i}
+                        className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors duration-200 ${
+                          i < roomCode.length ? "bg-primary-500" : "bg-gray-200"
+                        }`}
                       />
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4">
-                        <span className="text-gray-400 text-sm sm:text-base">
-                          🔑
-                        </span>
-                      </div>
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-4">
-                        <span className="text-gray-400 text-xs sm:text-sm font-mono">
-                          {roomCode.length}/6
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-1 flex justify-center">
-                      <div className="flex gap-1 sm:gap-2">
-                        {Array.from({ length: 6 }, (_, i) => (
-                          <div
-                            key={i}
-                            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors duration-200 ${
-                              i < roomCode.length
-                                ? "bg-primary-500"
-                                : "bg-gray-200"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="mt-1 p-1 sm:p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-xs sm:text-sm text-blue-800 flex items-center justify-center gap-1">
-                        <span>💡</span>
-                        <span>
-                          Room codes are 6 characters long (e.g., ABC123)
-                        </span>
-                      </p>
-                    </div>
+                    ))}
                   </div>
-                  <button
-                    type="submit"
-                    className="w-full flex items-center justify-center gap-2 py-2 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                    disabled={isLoading || !roomCode.trim() || !username.trim()}
-                  >
-                    {isLoading ? (
-                      <>
-                        <svg
-                          className="animate-spin w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 
-7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
-                        Joining...
-                      </>
-                    ) : (
-                      <>🚪 Join Room</>
-                    )}
-                  </button>
-                </form>
-              )}
+                </div>
+                <div className="mt-1 p-1 sm:p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-xs sm:text-sm text-blue-800 flex items-center justify-center gap-1">
+                    <span>💡</span>
+                    <span>Room codes are 6 characters long (e.g., ABC123)</span>
+                  </p>
+                </div>
+              </div>
 
-              {/* Create Room Form */}
-              {activeTab === "create" && (
-                <form onSubmit={handleCreateRoom} className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="roomName"
-                      className="block text-sm font-semibold text-gray-900 mb-1"
+              {/* Join Button */}
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 py-2 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                disabled={isLoading || !roomCode.trim() || !username.trim()}
+              >
+                {isLoading ? (
+                  <>
+                    <svg
+                      className="animate-spin w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
                     >
-                      🏠 Room Name (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      id="roomName"
-                      value={roomName}
-                      onChange={(e) => setRoomName(e.target.value)}
-                      placeholder="My Awesome Canvas"
-                      maxLength={50}
-                      className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm"
-                      disabled={isLoading}
-                      autoFocus
-                    />
-                    <p className="mt-1 text-xs text-gray-600">
-                      Give your room a memorable name for easier identification
-                    </p>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full flex items-center justify-center gap-2 py-2 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                    disabled={isLoading || !username.trim()}
-                  >
-                    {isLoading ? (
-                      <>
-                        <svg
-                          className="animate-spin w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 
 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
-                        Creating...
-                      </>
-                    ) : (
-                      <>➕ Create Room</>
-                    )}
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
+                      />
+                    </svg>
+                    Joining...
+                  </>
+                ) : (
+                  <>🚪 Join Room</>
+                )}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleCreateRoom} className="space-y-4 w-full">
+              {/* Room Name */}
+              <div>
+                <label
+                  htmlFor="roomName"
+                  className="block text-sm font-semibold text-gray-900 mb-1"
+                >
+                  🏠 Room Name (Optional)
+                </label>
+                <input
+                  type="text"
+                  id="roomName"
+                  value={roomName}
+                  onChange={(e) => setRoomName(e.target.value)}
+                  placeholder="My Awesome Canvas"
+                  maxLength={50}
+                  className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm"
+                  disabled={isLoading}
+                  autoFocus
+                />
+                <p className="mt-1 text-xs text-gray-600">
+                  Give your room a memorable name for easier identification
+                </p>
+              </div>
+              {/* Create Button */}
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 py-2 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                disabled={isLoading || !username.trim()}
+              >
+                {isLoading ? (
+                  <>
+                    <svg
+                      className="animate-spin w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 
+7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Creating...
+                  </>
+                ) : (
+                  <>➕ Create Room</>
+                )}
+              </button>
+            </form>
+          )}
         </div>
 
         {/* Footer */}
