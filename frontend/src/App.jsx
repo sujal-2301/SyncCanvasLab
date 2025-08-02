@@ -10,7 +10,18 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ||
     ? "http://localhost:3001"
     : `http://${window.location.hostname}:3001`);
 
-const socket = io(BACKEND_URL);
+// Ensure BACKEND_URL has proper protocol
+const getBackendUrl = (url) => {
+  if (!url) return url;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  return `https://${url}`;
+};
+
+const BACKEND_URL_FINAL = getBackendUrl(BACKEND_URL);
+
+const socket = io(BACKEND_URL_FINAL);
 
 function App() {
   // Connection state
@@ -37,7 +48,7 @@ function App() {
   // Room management functions
   const createRoom = async (roomName, username) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/rooms`, {
+      const response = await fetch(`${BACKEND_URL_FINAL}/api/rooms`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +75,7 @@ function App() {
     try {
       // Validate room first
       const validateResponse = await fetch(
-        `${BACKEND_URL}/api/rooms/${roomCode}/validate`
+        `${BACKEND_URL_FINAL}/api/rooms/${roomCode}/validate`
       );
       const validateData = await validateResponse.json();
 

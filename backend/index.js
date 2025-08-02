@@ -13,7 +13,7 @@ const io = socketIo(server, {
       /^http:\/\/192\.168\.\d+\.\d+:\d+$/,
       /^https:\/\/.*\.vercel\.app$/,
       /^https:\/\/.*\.railway\.app$/,
-      /^https:\/\/.*\.onrender\.com$/
+      /^https:\/\/.*\.onrender\.com$/,
     ],
     methods: ["GET", "POST"],
   },
