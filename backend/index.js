@@ -8,7 +8,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: [/^http:\/\/localhost:\d+$/, /^http:\/\/192\.168\.\d+\.\d+:\d+$/],
+    origin: [
+      /^http:\/\/localhost:\d+$/, 
+      /^http:\/\/192\.168\.\d+\.\d+:\d+$/,
+      /^https:\/\/.*\.vercel\.app$/,
+      /^https:\/\/.*\.railway\.app$/
+    ],
     methods: ["GET", "POST"],
   },
 });

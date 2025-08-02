@@ -5,10 +5,10 @@ import RoomManager from "./components/RoomManager";
 import DrawingToolbar from "./components/DrawingToolbar";
 import InfoModal from "./components/InfoModal";
 
-const BACKEND_URL =
-  window.location.hostname === "localhost"
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 
+  (window.location.hostname === "localhost"
     ? "http://localhost:3001"
-    : `http://${window.location.hostname}:3001`;
+    : `http://${window.location.hostname}:3001`);
 
 const socket = io(BACKEND_URL);
 

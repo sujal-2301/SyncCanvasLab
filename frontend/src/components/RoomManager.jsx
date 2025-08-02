@@ -46,10 +46,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
     setError("");
 
     try {
-      await onCreateRoom(
-        roomName.trim() || "Untitled Room",
-        username.trim()
-      );
+      await onCreateRoom(roomName.trim() || "Untitled Room", username.trim());
     } catch (err) {
       setError(err.message || "Failed to create room");
     } finally {
@@ -59,7 +56,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
         {/* Header */}
         <div className="px-8 pt-8 pb-6 text-center bg-gradient-to-br from-primary-50 to-primary-100">
           <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
