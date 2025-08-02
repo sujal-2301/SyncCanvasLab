@@ -129,10 +129,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           <div className="space-y-4">
             {/* Join Room Form */}
             {activeTab === "join" && (
-              <form
-                onSubmit={handleJoinRoom}
-                className="space-y-4"
-              >
+              <form onSubmit={handleJoinRoom} className="space-y-4">
                 {/* Room Code Section */}
                 <div className="text-center">
                   <div className="mb-1 sm:mb-2">
@@ -237,10 +234,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
             {/* Create Room Form */}
             {activeTab === "create" && (
-              <form
-                onSubmit={handleCreateRoom}
-                className="space-y-4"
-              >
+              <form onSubmit={handleCreateRoom} className="space-y-4">
                 <div>
                   <label
                     htmlFor="roomName"
