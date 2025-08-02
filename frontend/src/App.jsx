@@ -413,13 +413,13 @@ function App() {
                 setCopySuccess(true);
                 setTimeout(() => setCopySuccess(false), 2000); // Hide after 2 seconds
               } catch (err) {
-                console.error('Failed to copy:', err);
+                console.error("Failed to copy:", err);
               }
             }}
             className={`relative transition-all duration-200 ${
-              copySuccess 
-                ? 'text-green-600 scale-110' 
-                : 'text-primary-600 hover:text-primary-700'
+              copySuccess
+                ? "text-green-600 scale-110"
+                : "text-primary-600 hover:text-primary-700"
             }`}
             title={copySuccess ? "Copied!" : "Copy room code"}
           >
@@ -457,7 +457,7 @@ function App() {
         <div className="mt-1 text-xs text-primary-600">
           Share this code with others to invite them to your room
         </div>
-        
+
         {/* Copy Success Toast */}
         {copySuccess && (
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full mt-2 bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium shadow-lg animate-bounce">
