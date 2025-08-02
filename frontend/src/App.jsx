@@ -82,11 +82,18 @@ function App() {
 
   const joinRoom = async (roomCode, username) => {
     try {
+      console.log(`Attempting to join room: ${roomCode}`);
+      console.log(`Using backend URL: ${BACKEND_URL_FINAL}`);
+      
       // Validate room first
-      const validateResponse = await fetch(
-        `${BACKEND_URL_FINAL}/api/rooms/${roomCode}/validate`
-      );
+      const validateUrl = `${BACKEND_URL_FINAL}/api/rooms/${roomCode}/validate`;
+      console.log(`Validating room at: ${validateUrl}`);
+      
+      const validateResponse = await fetch(validateUrl);
+      console.log(`Validation response status: ${validateResponse.status}`);
+      
       const validateData = await validateResponse.json();
+      console.log(`Validation data:`, validateData);
 
       if (!validateData.success) {
         throw new Error(validateData.error);

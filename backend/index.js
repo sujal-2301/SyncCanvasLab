@@ -138,7 +138,11 @@ app.use(express.json());
 app.post("/api/rooms", (req, res) => {
   try {
     const { roomName } = req.body;
+    console.log(`Creating room with name: ${roomName}`);
+    
     const room = createRoom(roomName);
+    console.log(`Room created successfully: ${room.id}`);
+    console.log(`Total rooms now:`, Array.from(rooms.keys()));
 
     res.json({
       success: true,
@@ -161,15 +165,21 @@ app.post("/api/rooms", (req, res) => {
 app.get("/api/rooms/:roomCode/validate", (req, res) => {
   try {
     const { roomCode } = req.params;
+    console.log(`Validating room: ${roomCode}`);
+    console.log(`Available rooms:`, Array.from(rooms.keys()));
+    
     const validation = validateRoom(roomCode);
+    console.log(`Validation result:`, validation);
 
     if (!validation.valid) {
+      console.log(`Room validation failed: ${validation.error}`);
       return res.status(404).json({
         success: false,
         error: validation.error,
       });
     }
 
+    console.log(`Room validation successful for: ${roomCode}`);
     res.json({
       success: true,
       room: {
@@ -234,11 +244,14 @@ io.on("connection", (socket) => {
   socket.on("join-room", ({ roomCode, username }, callback) => {
     try {
       const roomId = roomCode.toUpperCase();
-      // Auto-create room for backward compatibility (remove this later if needed)
+      
+      // Check if room exists
       if (!rooms.has(roomId)) {
-        console.log(`Creating room ${roomId} on first join (legacy)`);
-        createRoom("Legacy Room", socket.id);
-        rooms.get(roomId).id = roomId; // Override generated ID for legacy
+        console.log(`Room ${roomId} not found for user ${socket.id}`);
+        return callback({
+          success: false,
+          error: "Room not found. Please check the room code.",
+        });
       }
 
       const room = rooms.get(roomId);
