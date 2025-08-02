@@ -70,7 +70,10 @@ function App() {
       if (data.success) {
         console.log("Room created:", data.room);
         
-        // Join the room via socket with callback first, then let socket events set the room state
+        // Set the room immediately to prevent cleanup interference
+        setCurrentRoom(data.room);
+        
+        // Join the room via socket with callback
         return new Promise((resolve, reject) => {
           socket.emit("join-room", { roomCode: data.room.id, username }, (response) => {
             if (response.success) {
@@ -78,6 +81,8 @@ function App() {
               resolve();
             } else {
               console.error("Failed to join created room:", response.error);
+              // If socket join fails, clear the room state
+              setCurrentRoom(null);
               reject(new Error(response.error));
             }
           });
@@ -151,7 +156,8 @@ function App() {
     });
 
     socket.on("room-joined", (data) => {
-      console.log("Room joined:", data);
+      console.log("Room joined event received:", data);
+      console.log("Setting current room to:", data.room);
       setCurrentRoom(data.room);
       setCurrentUser(data.user);
     });
@@ -200,6 +206,8 @@ function App() {
         socket.emit("leave-room", currentRoom.id);
       }
     };
+
+    console.log("Cleanup effect triggered, currentRoom:", currentRoom);
 
     // Add event listeners for page unload
     window.addEventListener("beforeunload", handleBeforeUnload);
