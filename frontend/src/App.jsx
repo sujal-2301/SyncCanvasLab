@@ -10,16 +10,25 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ||
     ? "http://localhost:3001"
     : `http://${window.location.hostname}:3001`);
 
-// Ensure BACKEND_URL has proper protocol
+// Ensure BACKEND_URL has proper protocol and no trailing slashes
 const getBackendUrl = (url) => {
   if (!url) return url;
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    return url;
+  
+  // Remove any trailing slashes
+  let cleanUrl = url.replace(/\/+$/, '');
+  
+  // Add protocol if missing
+  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+    cleanUrl = `https://${cleanUrl}`;
   }
-  return `https://${url}`;
+  
+  return cleanUrl;
 };
 
 const BACKEND_URL_FINAL = getBackendUrl(BACKEND_URL);
+
+// Debug: Log the backend URL being used
+console.log('Backend URL:', BACKEND_URL_FINAL);
 
 const socket = io(BACKEND_URL_FINAL);
 
