@@ -55,8 +55,8 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen p-2 sm:p-4">
-      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in h-[calc(100vh-2rem)] sm:h-[calc(100vh-2rem)] flex flex-col">
+    <div className="flex items-center justify-center min-h-screen p-2 sm:p-4">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3 text-center bg-gradient-to-br from-primary-50 to-primary-100">
           <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white text-lg sm:text-xl lg:text-2xl font-bold mx-auto mb-1 sm:mb-2">
@@ -70,7 +70,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           </p>
         </div>
 
-        <div className="px-4 sm:px-6 py-3 sm:py-4 flex-1 flex flex-col">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 flex-1 flex flex-col min-h-0">
           {/* Username Input */}
           <div className="mb-3 sm:mb-4">
             <label
@@ -129,18 +129,18 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {activeTab === "join" && (
             <form
               onSubmit={handleJoinRoom}
-              className="space-y-3 sm:space-y-4 flex-1 flex flex-col"
+              className="space-y-2 sm:space-y-3 flex-1 flex flex-col min-h-0"
             >
               {/* Room Code Section */}
               <div className="text-center">
-                <div className="mb-2 sm:mb-3">
+                <div className="mb-1 sm:mb-2">
                   <label
                     htmlFor="roomCode"
-                    className="block text-sm sm:text-base font-semibold text-gray-900 mb-1 sm:mb-2"
+                    className="block text-sm sm:text-base font-semibold text-gray-900 mb-1"
                   >
                     📱 Enter Room Code
                   </label>
-                  <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">
                     Ask the room creator to share their 6-character room code
                   </p>
                 </div>
@@ -173,7 +173,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                 </div>
 
                 {/* Visual indicator for room code format */}
-                <div className="mt-2 flex justify-center">
+                <div className="mt-1 flex justify-center">
                   <div className="flex gap-1 sm:gap-2">
                     {Array.from({ length: 6 }, (_, i) => (
                       <div
@@ -187,7 +187,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                 </div>
 
                 {/* Help text */}
-                <div className="mt-2 p-2 sm:p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mt-1 p-1 sm:p-2 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-xs sm:text-sm text-blue-800 flex items-center justify-center gap-1">
                     <span>💡</span>
                     <span>Room codes are 6 characters long (e.g., ABC123)</span>
@@ -196,7 +196,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base mt-auto"
+                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 disabled={isLoading || !roomCode.trim() || !username.trim()}
               >
                 {isLoading ? (
@@ -233,7 +233,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {activeTab === "create" && (
             <form
               onSubmit={handleCreateRoom}
-              className="space-y-3 sm:space-y-4 flex-1 flex flex-col"
+              className="space-y-2 sm:space-y-3 flex-1 flex flex-col min-h-0"
             >
               <div>
                 <label
@@ -259,7 +259,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base mt-auto"
+                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 disabled={isLoading || !username.trim()}
               >
                 {isLoading ? (
@@ -294,9 +294,9 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-4 sm:px-6 pb-3 sm:pb-4 pt-2 sm:pt-3 border-t border-gray-100 bg-gray-50">
-          <div className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-gray-600">
-            <span className="text-sm sm:text-base flex-shrink-0">💡</span>
+        <div className="px-4 sm:px-6 pb-2 sm:pb-3 pt-1 sm:pt-2 border-t border-gray-100 bg-gray-50">
+          <div className="flex items-start gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600">
+            <span className="text-xs sm:text-sm flex-shrink-0">💡</span>
             <p className="leading-relaxed">
               <strong className="text-gray-900">Tip:</strong> Share your room
               code with others to collaborate in real-time!
