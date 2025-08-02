@@ -423,7 +423,7 @@ io.on("connection", (socket) => {
       if (room.users.has(socket.id)) {
         const user = room.users.get(socket.id);
         room.users.delete(socket.id);
-        
+
         // Notify others in the room
         socket.to(roomId).emit("user-left", {
           userId: socket.id,
@@ -437,7 +437,9 @@ io.on("connection", (socket) => {
         // Clean up empty rooms
         if (room.users.size === 0) {
           rooms.delete(roomId);
-          console.log(`Room ${roomId} deleted - no users remaining after disconnect`);
+          console.log(
+            `Room ${roomId} deleted - no users remaining after disconnect`
+          );
         }
       }
     }
