@@ -55,8 +55,8 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
-      <div className="w-full max-w-md sm:max-w-lg bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
+    <div className="flex items-center justify-center min-h-screen p-2 sm:p-4">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
         {/* Header */}
         <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 text-center bg-gradient-to-br from-primary-50 to-primary-100">
           <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-white text-xl sm:text-2xl font-bold mx-auto mb-3 sm:mb-4">
@@ -141,7 +141,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                     Ask the room creator to share their 6-character room code
                   </p>
                 </div>
-                
+
                 {/* Large, prominent room code input */}
                 <div className="relative">
                   <input
@@ -166,7 +166,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                     </span>
                   </div>
                 </div>
-                
+
                 {/* Visual indicator for room code format */}
                 <div className="mt-3 flex justify-center">
                   <div className="flex gap-1">
@@ -174,15 +174,13 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                       <div
                         key={i}
                         className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                          i < roomCode.length
-                            ? "bg-primary-500"
-                            : "bg-gray-200"
+                          i < roomCode.length ? "bg-primary-500" : "bg-gray-200"
                         }`}
                       />
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Help text */}
                 <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800 flex items-center justify-center gap-2">

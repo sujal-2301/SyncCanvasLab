@@ -385,6 +385,35 @@ function App() {
         </div>
       </nav>
 
+      {/* Mobile Room Code Display */}
+      <div className="sm:hidden bg-primary-50 border-b border-primary-200 p-3 flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium text-primary-700">Room Code:</span>
+            <div className="bg-white px-3 py-1 rounded-lg border border-primary-300">
+              <span className="font-mono font-bold text-lg text-primary-900 tracking-wider">
+                {currentRoom.id}
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(currentRoom.id);
+              // You could add a toast notification here
+            }}
+            className="text-primary-600 hover:text-primary-700 transition-colors"
+            title="Copy room code"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+          </button>
+        </div>
+        <div className="mt-1 text-xs text-primary-600">
+          Share this code with others to invite them to your room
+        </div>
+      </div>
+
       {/* Connection Status Alert */}
       {connectionStatus !== "connected" && (
         <div className="bg-warning-50 border-l-4 border-warning-500 p-2 sm:p-4 animate-slide-in flex-shrink-0">
