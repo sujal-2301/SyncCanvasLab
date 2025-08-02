@@ -139,7 +139,7 @@ app.post("/api/rooms", (req, res) => {
   try {
     const { roomName } = req.body;
     console.log(`Creating room with name: ${roomName}`);
-    
+
     const room = createRoom(roomName);
     console.log(`Room created successfully: ${room.id}`);
     console.log(`Total rooms now:`, Array.from(rooms.keys()));
@@ -167,7 +167,7 @@ app.get("/api/rooms/:roomCode/validate", (req, res) => {
     const { roomCode } = req.params;
     console.log(`Validating room: ${roomCode}`);
     console.log(`Available rooms:`, Array.from(rooms.keys()));
-    
+
     const validation = validateRoom(roomCode);
     console.log(`Validation result:`, validation);
 
@@ -244,7 +244,7 @@ io.on("connection", (socket) => {
   socket.on("join-room", ({ roomCode, username }, callback) => {
     try {
       const roomId = roomCode.toUpperCase();
-      
+
       // Check if room exists
       if (!rooms.has(roomId)) {
         console.log(`Room ${roomId} not found for user ${socket.id}`);
