@@ -55,8 +55,8 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in">
+    <div className="flex items-center justify-center h-screen p-2 sm:p-4">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in h-[calc(100vh-2rem)] sm:h-[calc(100vh-2rem)] flex flex-col">
         {/* Header */}
         <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3 text-center bg-gradient-to-br from-primary-50 to-primary-100">
           <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white text-lg sm:text-xl lg:text-2xl font-bold mx-auto mb-1 sm:mb-2">
@@ -70,7 +70,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           </p>
         </div>
 
-        <div className="px-4 sm:px-6 py-3 sm:py-4">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 flex-1 flex flex-col">
           {/* Username Input */}
           <div className="mb-3 sm:mb-4">
             <label
@@ -127,7 +127,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
           {/* Join Room Form */}
           {activeTab === "join" && (
-            <form onSubmit={handleJoinRoom} className="space-y-3 sm:space-y-4">
+            <form onSubmit={handleJoinRoom} className="space-y-3 sm:space-y-4 flex-1 flex flex-col">
               {/* Room Code Section */}
               <div className="text-center">
                 <div className="mb-2 sm:mb-3">
@@ -193,7 +193,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base mt-auto"
                 disabled={isLoading || !roomCode.trim() || !username.trim()}
               >
                 {isLoading ? (
@@ -230,7 +230,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {activeTab === "create" && (
             <form
               onSubmit={handleCreateRoom}
-              className="space-y-3 sm:space-y-4"
+              className="space-y-3 sm:space-y-4 flex-1 flex flex-col"
             >
               <div>
                 <label
@@ -256,7 +256,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base mt-auto"
                 disabled={isLoading || !username.trim()}
               >
                 {isLoading ? (
