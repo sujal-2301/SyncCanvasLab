@@ -110,7 +110,7 @@ const DrawingToolbar = ({
               />
               {/* Slider Track Indicator */}
               <div className="absolute top-0 left-0 right-0 h-3 bg-gray-100 rounded-lg opacity-50 pointer-events-none">
-                <div 
+                <div
                   className="h-full bg-primary-500 rounded-lg transition-all duration-200"
                   style={{ width: `${((brushSize - 1) / 49) * 100}%` }}
                 />
