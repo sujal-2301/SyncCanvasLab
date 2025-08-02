@@ -55,8 +55,8 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-2 sm:p-4">
-      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in">
+    <div className="flex items-center justify-center h-screen p-2 sm:p-4">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in flex flex-col" style={{ height: 'calc(100vh - 2rem)' }}>
         {/* Header */}
         <div className="px-4 sm:px-6 pt-2 sm:pt-3 pb-1 sm:pb-2 text-center bg-gradient-to-br from-primary-50 to-primary-100">
           <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white text-base sm:text-lg lg:text-xl font-bold mx-auto mb-1">
@@ -70,7 +70,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           </p>
         </div>
 
-        <div className="px-4 sm:px-6 py-3">
+        <div className="px-4 sm:px-6 py-3 flex-1 flex flex-col">
           {/* Username Input */}
           <div className="mb-4">
             <label
@@ -126,7 +126,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           )}
 
           {/* Form Content */}
-          <div className="space-y-4">
+          <div className="flex-1 flex flex-col justify-center space-y-4">
             {/* Join Room Form */}
             {activeTab === "join" && (
               <form onSubmit={handleJoinRoom} className="space-y-4">
