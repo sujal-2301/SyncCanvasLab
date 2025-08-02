@@ -69,10 +69,21 @@ function App() {
       const data = await response.json();
       if (data.success) {
         console.log("Room created:", data.room);
-        // Set the room and join via socket
+        // Set the room and join via socket with proper callback handling
         setCurrentRoom(data.room);
-        // Join the room via socket without calling the joinRoom function
-        socket.emit("join-room", { roomCode: data.room.id, username });
+        
+        // Join the room via socket with callback
+        return new Promise((resolve, reject) => {
+          socket.emit("join-room", { roomCode: data.room.id, username }, (response) => {
+            if (response.success) {
+              console.log("Successfully joined created room:", data.room.id);
+              resolve();
+            } else {
+              console.error("Failed to join created room:", response.error);
+              reject(new Error(response.error));
+            }
+          });
+        });
       } else {
         throw new Error(data.error);
       }
@@ -182,8 +193,6 @@ function App() {
       if (currentRoom) {
         console.log(`Page unloading - leaving room: ${currentRoom.id}`);
         socket.emit("leave-room", currentRoom.id);
-        // Also emit force-leave as backup
-        socket.emit("force-leave-room", currentRoom.id);
       }
     };
 
@@ -191,8 +200,6 @@ function App() {
       if (document.visibilityState === "hidden" && currentRoom) {
         console.log(`Page hidden - leaving room: ${currentRoom.id}`);
         socket.emit("leave-room", currentRoom.id);
-        // Also emit force-leave as backup
-        socket.emit("force-leave-room", currentRoom.id);
       }
     };
 
@@ -229,14 +236,9 @@ function App() {
     return () => {
       if (currentRoom) {
         console.log(
-          `Component unmounting - forcing leave room: ${currentRoom.id}`
+          `Component unmounting - leaving room: ${currentRoom.id}`
         );
-        // Try normal leave first, then force leave as backup
         socket.emit("leave-room", currentRoom.id);
-        // Also emit force-leave as a backup mechanism
-        setTimeout(() => {
-          socket.emit("force-leave-room", currentRoom.id);
-        }, 1000);
       }
     };
   }, [currentRoom]);
