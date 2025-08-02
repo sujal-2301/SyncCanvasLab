@@ -1,5 +1,5 @@
 /* Import Inter font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
 /* Tailwind CSS */
 @tailwind base;
@@ -11,14 +11,14 @@
   /* Viewport-based sizing */
   --vh: 1vh;
   --vw: 1vw;
-  
+
   /* Dynamic spacing based on viewport */
   --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
   --spacing-sm: clamp(0.5rem, 2vw, 1rem);
   --spacing-md: clamp(1rem, 3vw, 1.5rem);
   --spacing-lg: clamp(1.5rem, 4vw, 2rem);
   --spacing-xl: clamp(2rem, 5vw, 3rem);
-  
+
   /* Dynamic font sizes */
   --text-xs: clamp(0.75rem, 2vw, 0.875rem);
   --text-sm: clamp(0.875rem, 2.5vw, 1rem);
@@ -27,7 +27,7 @@
   --text-xl: clamp(1.25rem, 4vw, 1.5rem);
   --text-2xl: clamp(1.5rem, 5vw, 2rem);
   --text-3xl: clamp(2rem, 6vw, 2.5rem);
-  
+
   /* Dynamic container sizing */
   --container-max-width: min(90vw, 28rem);
   --container-max-width-sm: min(95vw, 24rem);
@@ -49,45 +49,75 @@
     max-width: var(--container-max-width);
     margin: 0 auto;
   }
-  
+
   .container-dynamic-sm {
     width: 100%;
     max-width: var(--container-max-width-sm);
     margin: 0 auto;
   }
-  
+
   .container-dynamic-lg {
     width: 100%;
     max-width: var(--container-max-width-lg);
     margin: 0 auto;
   }
-  
+
   .container-dynamic-xl {
     width: 100%;
     max-width: var(--container-max-width-xl);
     margin: 0 auto;
   }
-  
+
   /* Dynamic spacing utilities */
-  .space-dynamic-xs { gap: var(--spacing-xs); }
-  .space-dynamic-sm { gap: var(--spacing-sm); }
-  .space-dynamic-md { gap: var(--spacing-md); }
-  .space-dynamic-lg { gap: var(--spacing-lg); }
-  .space-dynamic-xl { gap: var(--spacing-xl); }
-  
+  .space-dynamic-xs {
+    gap: var(--spacing-xs);
+  }
+  .space-dynamic-sm {
+    gap: var(--spacing-sm);
+  }
+  .space-dynamic-md {
+    gap: var(--spacing-md);
+  }
+  .space-dynamic-lg {
+    gap: var(--spacing-lg);
+  }
+  .space-dynamic-xl {
+    gap: var(--spacing-xl);
+  }
+
   /* Dynamic padding utilities */
-  .p-dynamic-xs { padding: var(--spacing-xs); }
-  .p-dynamic-sm { padding: var(--spacing-sm); }
-  .p-dynamic-md { padding: var(--spacing-md); }
-  .p-dynamic-lg { padding: var(--spacing-lg); }
-  .p-dynamic-xl { padding: var(--spacing-xl); }
-  
+  .p-dynamic-xs {
+    padding: var(--spacing-xs);
+  }
+  .p-dynamic-sm {
+    padding: var(--spacing-sm);
+  }
+  .p-dynamic-md {
+    padding: var(--spacing-md);
+  }
+  .p-dynamic-lg {
+    padding: var(--spacing-lg);
+  }
+  .p-dynamic-xl {
+    padding: var(--spacing-xl);
+  }
+
   /* Dynamic margin utilities */
-  .m-dynamic-xs { margin: var(--spacing-xs); }
-  .m-dynamic-sm { margin: var(--spacing-sm); }
-  .m-dynamic-md { margin: var(--spacing-md); }
-  .m-dynamic-lg { margin: var(--spacing-lg); }
-  .m-dynamic-xl { margin: var(--spacing-xl); }
+  .m-dynamic-xs {
+    margin: var(--spacing-xs);
+  }
+  .m-dynamic-sm {
+    margin: var(--spacing-sm);
+  }
+  .m-dynamic-md {
+    margin: var(--spacing-md);
+  }
+  .m-dynamic-lg {
+    margin: var(--spacing-lg);
+  }
+  .m-dynamic-xl {
+    margin: var(--spacing-xl);
+  }
 }
 
 /* Smooth scrolling and better mobile experience */
@@ -100,10 +130,13 @@ html {
 
 /* Better touch targets for mobile */
 @media (max-width: 768px) {
-  button, input, select, textarea {
+  button,
+  input,
+  select,
+  textarea {
     min-height: 44px; /* iOS recommended minimum */
   }
-  
+
   /* Prevent zoom on input focus for iOS */
   input[type="text"],
   input[type="email"],

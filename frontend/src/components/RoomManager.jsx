@@ -3,7 +3,10 @@ import { useViewport, getOptimalContainerSize } from "../hooks/useViewport";
 
 const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   const viewport = useViewport();
-  const containerSize = getOptimalContainerSize(viewport.width, viewport.height);
+  const containerSize = getOptimalContainerSize(
+    viewport.width,
+    viewport.height
+  );
   const [activeTab, setActiveTab] = useState("join");
   const [roomCode, setRoomCode] = useState("");
   const [roomName, setRoomName] = useState("");
@@ -59,7 +62,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-dynamic-sm">
-      <div 
+      <div
         className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in"
         style={{
           maxWidth: containerSize.maxWidth,
@@ -137,7 +140,10 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
           {/* Join Room Form */}
           {activeTab === "join" && (
-            <form onSubmit={handleJoinRoom} className="space-y-4 sm:space-y-6 lg:space-y-8">
+            <form
+              onSubmit={handleJoinRoom}
+              className="space-y-4 sm:space-y-6 lg:space-y-8"
+            >
               {/* Room Code Section */}
               <div className="text-center">
                 <div className="mb-3 sm:mb-4 lg:mb-6">
