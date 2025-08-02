@@ -68,7 +68,7 @@
     max-width: var(--container-max-width-xl);
     margin: 0 auto;
   }
-  
+
   .container-dynamic-2xl {
     width: 100%;
     max-width: var(--container-max-width-2xl);
