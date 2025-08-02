@@ -69,10 +69,8 @@ function App() {
       const data = await response.json();
       if (data.success) {
         console.log("Room created:", data.room);
-        // Set the room and join via socket with proper callback handling
-        setCurrentRoom(data.room);
         
-        // Join the room via socket with callback
+        // Join the room via socket with callback first, then let socket events set the room state
         return new Promise((resolve, reject) => {
           socket.emit("join-room", { roomCode: data.room.id, username }, (response) => {
             if (response.success) {
