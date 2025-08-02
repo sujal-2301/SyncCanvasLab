@@ -127,7 +127,10 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
           {/* Join Room Form */}
           {activeTab === "join" && (
-            <form onSubmit={handleJoinRoom} className="space-y-3 sm:space-y-4 flex-1 flex flex-col">
+            <form
+              onSubmit={handleJoinRoom}
+              className="space-y-3 sm:space-y-4 flex-1 flex flex-col"
+            >
               {/* Room Code Section */}
               <div className="text-center">
                 <div className="mb-2 sm:mb-3">
