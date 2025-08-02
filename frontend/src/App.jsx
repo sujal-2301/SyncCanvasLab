@@ -58,6 +58,8 @@ function App() {
   // Room management functions
   const createRoom = async (roomName, username) => {
     try {
+      console.log("Creating room with name:", roomName, "and username:", username);
+      
       const response = await fetch(`${BACKEND_URL_FINAL}/api/rooms`, {
         method: "POST",
         headers: {
@@ -68,13 +70,15 @@ function App() {
 
       const data = await response.json();
       if (data.success) {
-        console.log("Room created:", data.room);
+        console.log("Room created successfully:", data.room);
         
         // Set the room immediately to prevent cleanup interference
+        console.log("Setting currentRoom to:", data.room);
         setCurrentRoom(data.room);
         
         // Join the room via socket with callback
         return new Promise((resolve, reject) => {
+          console.log("Emitting join-room for:", data.room.id);
           socket.emit("join-room", { roomCode: data.room.id, username }, (response) => {
             if (response.success) {
               console.log("Successfully joined created room:", data.room.id);
@@ -207,18 +211,22 @@ function App() {
       }
     };
 
-    console.log("Cleanup effect triggered, currentRoom:", currentRoom);
-
-    // Add event listeners for page unload
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("pagehide", handleBeforeUnload);
-    window.addEventListener("visibilitychange", handleVisibilityChange);
+    // Only add event listeners if we have a room
+    if (currentRoom) {
+      console.log("Adding cleanup listeners for room:", currentRoom.id);
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      window.addEventListener("pagehide", handleBeforeUnload);
+      window.addEventListener("visibilitychange", handleVisibilityChange);
+    }
 
     // Cleanup event listeners
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("pagehide", handleBeforeUnload);
-      window.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (currentRoom) {
+        console.log("Removing cleanup listeners for room:", currentRoom.id);
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        window.removeEventListener("pagehide", handleBeforeUnload);
+        window.removeEventListener("visibilitychange", handleVisibilityChange);
+      }
     };
   }, [currentRoom]);
 
@@ -247,7 +255,7 @@ function App() {
         socket.emit("leave-room", currentRoom.id);
       }
     };
-  }, [currentRoom]);
+  }, []); // Only run on component unmount, not when currentRoom changes
 
   // Format users for RoomInfo component
   const formattedUsers = useMemo(
