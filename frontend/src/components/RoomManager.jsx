@@ -70,67 +70,72 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           </p>
         </div>
 
-        <div className="px-4 sm:px-6 py-1 sm:py-2 flex-1 flex flex-col">
-          {/* Username Input */}
-          <div className="mb-1 sm:mb-2">
-            <label
-              htmlFor="username"
-              className="block text-sm font-semibold text-gray-900 mb-1"
-            >
-              👤 Your Name
-            </label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your name..."
-              maxLength={25}
-              className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm"
-              disabled={isLoading}
-            />
-          </div>
-
-          {/* Tabs */}
-          <div className="flex bg-gray-100 rounded-lg p-1 mb-1 sm:mb-2">
-            <button
-              className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
-                activeTab === "join"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-              onClick={() => setActiveTab("join")}
-              disabled={isLoading}
-            >
-              🚪 Join
-            </button>
-            <button
-              className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
-                activeTab === "create"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-              onClick={() => setActiveTab("create")}
-              disabled={isLoading}
-            >
-              ➕ Create
-            </button>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="mb-2 p-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-md text-xs sm:text-sm flex items-center gap-2 animate-slide-in">
-              <span>⚠️</span>
-              <span>{error}</span>
+        <div className="px-4 sm:px-6 py-1 sm:py-2 flex-1 flex flex-col justify-between">
+          {/* Top Section */}
+          <div className="flex flex-col space-y-3">
+            {/* Username Input */}
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-semibold text-gray-900 mb-1"
+              >
+                👤 Your Name
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your name..."
+                maxLength={25}
+                className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm"
+                disabled={isLoading}
+              />
             </div>
-          )}
 
-          {/* Join Room Form */}
-          {activeTab === "join" && (
-            <form
-              onSubmit={handleJoinRoom}
-              className="space-y-2 flex-1 flex flex-col"
-            >
+            {/* Tabs */}
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
+                  activeTab === "join"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+                onClick={() => setActiveTab("join")}
+                disabled={isLoading}
+              >
+                🚪 Join
+              </button>
+              <button
+                className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
+                  activeTab === "create"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+                onClick={() => setActiveTab("create")}
+                disabled={isLoading}
+              >
+                ➕ Create
+              </button>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="p-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-md text-xs sm:text-sm flex items-center gap-2 animate-slide-in">
+                <span>⚠️</span>
+                <span>{error}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Middle Section - Form Content */}
+          <div className="flex-1 flex flex-col justify-center">
+            {/* Join Room Form */}
+            {activeTab === "join" && (
+              <form
+                onSubmit={handleJoinRoom}
+                className="flex flex-col space-y-4"
+              >
               {/* Room Code Section */}
               <div className="text-center">
                 <div className="mb-1 sm:mb-2">
@@ -233,12 +238,12 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {activeTab === "create" && (
             <form
               onSubmit={handleCreateRoom}
-              className="space-y-2 flex-1 flex flex-col"
+              className="flex flex-col space-y-4"
             >
               <div>
                 <label
                   htmlFor="roomName"
-                  className="block text-sm sm:text-base font-semibold text-gray-900 mb-1 sm:mb-2"
+                  className="block text-sm font-semibold text-gray-900 mb-1"
                 >
                   🏠 Room Name (Optional)
                 </label>
@@ -249,7 +254,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                   onChange={(e) => setRoomName(e.target.value)}
                   placeholder="My Awesome Canvas"
                   maxLength={50}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm"
                   disabled={isLoading}
                   autoFocus
                 />
@@ -291,6 +296,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               </button>
             </form>
           )}
+          </div>
         </div>
 
         {/* Footer */}
