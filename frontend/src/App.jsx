@@ -5,7 +5,8 @@ import RoomManager from "./components/RoomManager";
 import DrawingToolbar from "./components/DrawingToolbar";
 import InfoModal from "./components/InfoModal";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 
+const BACKEND_URL =
+  import.meta.env.VITE_BACKEND_URL ||
   (window.location.hostname === "localhost"
     ? "http://localhost:3001"
     : `http://${window.location.hostname}:3001`);
@@ -13,22 +14,22 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ||
 // Ensure BACKEND_URL has proper protocol and no trailing slashes
 const getBackendUrl = (url) => {
   if (!url) return url;
-  
+
   // Remove any trailing slashes
-  let cleanUrl = url.replace(/\/+$/, '');
-  
+  let cleanUrl = url.replace(/\/+$/, "");
+
   // Add protocol if missing
-  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+  if (!cleanUrl.startsWith("http://") && !cleanUrl.startsWith("https://")) {
     cleanUrl = `https://${cleanUrl}`;
   }
-  
+
   return cleanUrl;
 };
 
 const BACKEND_URL_FINAL = getBackendUrl(BACKEND_URL);
 
 // Debug: Log the backend URL being used
-console.log('Backend URL:', BACKEND_URL_FINAL);
+console.log("Backend URL:", BACKEND_URL_FINAL);
 
 const socket = io(BACKEND_URL_FINAL);
 
@@ -68,9 +69,10 @@ function App() {
       const data = await response.json();
       if (data.success) {
         console.log("Room created:", data.room);
-        // Manually set the room to trigger UI transition immediately
+        // Set the room and join via socket
         setCurrentRoom(data.room);
-        await joinRoom(data.room.id, username);
+        // Join the room via socket without calling the joinRoom function
+        socket.emit("join-room", { roomCode: data.room.id, username });
       } else {
         throw new Error(data.error);
       }
@@ -84,14 +86,14 @@ function App() {
     try {
       console.log(`Attempting to join room: ${roomCode}`);
       console.log(`Using backend URL: ${BACKEND_URL_FINAL}`);
-      
+
       // Validate room first
       const validateUrl = `${BACKEND_URL_FINAL}/api/rooms/${roomCode}/validate`;
       console.log(`Validating room at: ${validateUrl}`);
-      
+
       const validateResponse = await fetch(validateUrl);
       console.log(`Validation response status: ${validateResponse.status}`);
-      
+
       const validateData = await validateResponse.json();
       console.log(`Validation data:`, validateData);
 
@@ -186,7 +188,7 @@ function App() {
     };
 
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden' && currentRoom) {
+      if (document.visibilityState === "hidden" && currentRoom) {
         console.log(`Page hidden - leaving room: ${currentRoom.id}`);
         socket.emit("leave-room", currentRoom.id);
         // Also emit force-leave as backup
@@ -195,15 +197,15 @@ function App() {
     };
 
     // Add event listeners for page unload
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('pagehide', handleBeforeUnload);
-    window.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("pagehide", handleBeforeUnload);
+    window.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Cleanup event listeners
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('pagehide', handleBeforeUnload);
-      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("pagehide", handleBeforeUnload);
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [currentRoom]);
 
@@ -226,7 +228,9 @@ function App() {
   useEffect(() => {
     return () => {
       if (currentRoom) {
-        console.log(`Component unmounting - forcing leave room: ${currentRoom.id}`);
+        console.log(
+          `Component unmounting - forcing leave room: ${currentRoom.id}`
+        );
         // Try normal leave first, then force leave as backup
         socket.emit("leave-room", currentRoom.id);
         // Also emit force-leave as a backup mechanism
