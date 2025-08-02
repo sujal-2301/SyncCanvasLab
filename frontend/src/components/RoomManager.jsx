@@ -25,7 +25,6 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
     try {
       await onJoinRoom(roomCode.trim().toUpperCase(), username.trim());
     } catch (err) {
-      // Provide more specific feedback for common errors
       if (err.message.includes("Room not found")) {
         setError("Room not found. Please check the code and try again.");
       } else {
@@ -55,10 +54,14 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen p-2 sm:p-4">
+    <div className="flex items-center justify-center h-screen overflow-hidden">
       <div
-        className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in flex flex-col"
-        style={{ height: "calc(100vh - 2rem)" }}
+        className="
+          flex flex-col justify-between h-full
+          w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl
+          bg-white rounded-2xl shadow-xl border border-gray-100
+          overflow-hidden animate-scale-in
+        "
       >
         {/* Header */}
         <div className="px-4 sm:px-6 pt-2 sm:pt-3 pb-1 sm:pb-2 text-center bg-gradient-to-br from-primary-50 to-primary-100">
@@ -73,7 +76,8 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           </p>
         </div>
 
-        <div className="px-4 sm:px-6 py-3 flex-1 flex flex-col justify-between">
+        {/* Body */}
+        <div className="px-4 sm:px-6 flex-1 flex flex-col justify-center">
           {/* Top Section */}
           <div className="space-y-3">
             {/* Username Input */}
@@ -131,13 +135,12 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
             )}
           </div>
 
-          {/* Middle Section - Form Content */}
+          {/* Form Content */}
           <div className="flex-1 flex items-center justify-center">
             <div className="w-full space-y-4">
               {/* Join Room Form */}
               {activeTab === "join" && (
                 <form onSubmit={handleJoinRoom} className="space-y-4">
-                  {/* Room Code Section */}
                   <div className="text-center">
                     <div className="mb-1 sm:mb-2">
                       <label
@@ -151,8 +154,6 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                         code
                       </p>
                     </div>
-
-                    {/* Large, prominent room code input */}
                     <div className="relative">
                       <input
                         type="text"
@@ -178,8 +179,6 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                         </span>
                       </div>
                     </div>
-
-                    {/* Visual indicator for room code format */}
                     <div className="mt-1 flex justify-center">
                       <div className="flex gap-1 sm:gap-2">
                         {Array.from({ length: 6 }, (_, i) => (
@@ -194,8 +193,6 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                         ))}
                       </div>
                     </div>
-
-                    {/* Help text */}
                     <div className="mt-1 p-1 sm:p-2 bg-blue-50 border border-blue-200 rounded-lg">
                       <p className="text-xs sm:text-sm text-blue-800 flex items-center justify-center gap-1">
                         <span>💡</span>
@@ -224,12 +221,13 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                             r="10"
                             stroke="currentColor"
                             strokeWidth="4"
-                          ></circle>
+                          />
                           <path
                             className="opacity-75"
                             fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 
+7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
                         </svg>
                         Joining...
                       </>
@@ -284,12 +282,13 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                             r="10"
                             stroke="currentColor"
                             strokeWidth="4"
-                          ></circle>
+                          />
                           <path
                             className="opacity-75"
                             fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 
+7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
                         </svg>
                         Creating...
                       </>
