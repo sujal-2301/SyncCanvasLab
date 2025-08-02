@@ -55,27 +55,27 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-2 sm:p-4">
-      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
+    <div className="flex items-center justify-center min-h-screen p-1 sm:p-2">
+      <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
         {/* Header */}
-        <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 text-center bg-gradient-to-br from-primary-50 to-primary-100">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-white text-xl sm:text-2xl font-bold mx-auto mb-3 sm:mb-4">
+        <div className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 text-center bg-gradient-to-br from-primary-50 to-primary-100">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white text-lg sm:text-xl font-bold mx-auto mb-2 sm:mb-3">
             🎨
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
             SyncCanvasLab
           </h1>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 text-xs sm:text-sm">
             Create or join a room to start collaborating
           </p>
         </div>
 
-        <div className="px-6 sm:px-8 py-4 sm:py-6">
+        <div className="px-4 sm:px-6 py-3 sm:py-4">
           {/* Username Input */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <label
               htmlFor="username"
-              className="block text-base font-semibold text-gray-900 mb-3"
+              className="block text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3"
             >
               👤 Your Name
             </label>
@@ -86,13 +86,13 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter your name..."
               maxLength={25}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-base"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm sm:text-base"
               disabled={isLoading}
             />
           </div>
 
           {/* Tabs */}
-          <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+          <div className="flex bg-gray-100 rounded-xl p-1 mb-4 sm:mb-6">
             <button
               className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm sm:text-base font-medium transition-all duration-200 ${
                 activeTab === "join"
@@ -226,11 +226,11 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
           {/* Create Room Form */}
           {activeTab === "create" && (
-            <form onSubmit={handleCreateRoom} className="space-y-6">
+            <form onSubmit={handleCreateRoom} className="space-y-4 sm:space-y-6">
               <div>
                 <label
                   htmlFor="roomName"
-                  className="block text-base font-semibold text-gray-900 mb-3"
+                  className="block text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3"
                 >
                   🏠 Room Name (Optional)
                 </label>
@@ -241,17 +241,17 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                   onChange={(e) => setRoomName(e.target.value)}
                   placeholder="My Awesome Canvas"
                   maxLength={50}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-base"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm sm:text-base"
                   disabled={isLoading}
                   autoFocus
                 />
-                <p className="mt-3 text-sm text-gray-600">
+                <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-600">
                   Give your room a memorable name for easier identification
                 </p>
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-4 px-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 focus:ring-4 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 focus:ring-4 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 disabled={isLoading || !username.trim()}
               >
                 {isLoading ? (
@@ -286,9 +286,9 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-4 border-t border-gray-100 bg-gray-50">
-          <div className="flex items-start gap-3 text-sm text-gray-600">
-            <span className="text-lg flex-shrink-0">💡</span>
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-3 sm:pt-4 border-t border-gray-100 bg-gray-50">
+          <div className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-gray-600">
+            <span className="text-base sm:text-lg flex-shrink-0">💡</span>
             <p className="leading-relaxed">
               <strong className="text-gray-900">Tip:</strong> Share your room
               code with others to collaborate in real-time!

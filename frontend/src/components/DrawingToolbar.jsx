@@ -72,11 +72,11 @@ const DrawingToolbar = ({
             />
             {showColorPicker && (
               <div className="absolute bottom-full left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-20">
-                <div className="grid grid-cols-4 gap-3 mb-3">
+                <div className="grid grid-cols-3 gap-4 mb-3">
                   {predefinedColors.map((color) => (
                     <button
                       key={color}
-                      className="w-8 h-8 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-colors duration-200"
+                      className="w-10 h-10 rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-colors duration-200"
                       style={{ backgroundColor: color }}
                       onClick={() => {
                         setBrushColor(color);
@@ -85,7 +85,9 @@ const DrawingToolbar = ({
                     />
                   ))}
                 </div>
-                <div className="text-xs text-gray-600 text-center">Tap to select color</div>
+                <div className="text-xs text-gray-600 text-center">
+                  Tap to select color
+                </div>
               </div>
             )}
           </div>

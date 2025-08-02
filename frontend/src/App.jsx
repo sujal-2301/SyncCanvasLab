@@ -58,8 +58,13 @@ function App() {
   // Room management functions
   const createRoom = async (roomName, username) => {
     try {
-      console.log("Creating room with name:", roomName, "and username:", username);
-      
+      console.log(
+        "Creating room with name:",
+        roomName,
+        "and username:",
+        username
+      );
+
       const response = await fetch(`${BACKEND_URL_FINAL}/api/rooms`, {
         method: "POST",
         headers: {
@@ -71,25 +76,29 @@ function App() {
       const data = await response.json();
       if (data.success) {
         console.log("Room created successfully:", data.room);
-        
+
         // Set the room immediately to prevent cleanup interference
         console.log("Setting currentRoom to:", data.room);
         setCurrentRoom(data.room);
-        
+
         // Join the room via socket with callback
         return new Promise((resolve, reject) => {
           console.log("Emitting join-room for:", data.room.id);
-          socket.emit("join-room", { roomCode: data.room.id, username }, (response) => {
-            if (response.success) {
-              console.log("Successfully joined created room:", data.room.id);
-              resolve();
-            } else {
-              console.error("Failed to join created room:", response.error);
-              // If socket join fails, clear the room state
-              setCurrentRoom(null);
-              reject(new Error(response.error));
+          socket.emit(
+            "join-room",
+            { roomCode: data.room.id, username },
+            (response) => {
+              if (response.success) {
+                console.log("Successfully joined created room:", data.room.id);
+                resolve();
+              } else {
+                console.error("Failed to join created room:", response.error);
+                // If socket join fails, clear the room state
+                setCurrentRoom(null);
+                reject(new Error(response.error));
+              }
             }
-          });
+          );
         });
       } else {
         throw new Error(data.error);
@@ -249,9 +258,7 @@ function App() {
   useEffect(() => {
     return () => {
       if (currentRoom) {
-        console.log(
-          `Component unmounting - leaving room: ${currentRoom.id}`
-        );
+        console.log(`Component unmounting - leaving room: ${currentRoom.id}`);
         socket.emit("leave-room", currentRoom.id);
       }
     };
@@ -389,7 +396,9 @@ function App() {
       <div className="sm:hidden bg-primary-50 border-b border-primary-200 p-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-primary-700">Room Code:</span>
+            <span className="text-sm font-medium text-primary-700">
+              Room Code:
+            </span>
             <div className="bg-white px-3 py-1 rounded-lg border border-primary-300">
               <span className="font-mono font-bold text-lg text-primary-900 tracking-wider">
                 {currentRoom.id}
@@ -404,8 +413,18 @@ function App() {
             className="text-primary-600 hover:text-primary-700 transition-colors"
             title="Copy room code"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
             </svg>
           </button>
         </div>
