@@ -1,124 +1,187 @@
 /* Import Inter font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    @apply antialiased;
-  }
+/* CSS Custom Properties for Dynamic Sizing */
+:root {
+  /* Viewport-based sizing */
+  --vh: 1vh;
+  --vw: 1vw;
   
-  html {
-    @apply scroll-smooth;
-  }
+  /* Dynamic spacing based on viewport */
+  --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
+  --spacing-sm: clamp(0.5rem, 2vw, 1rem);
+  --spacing-md: clamp(1rem, 3vw, 1.5rem);
+  --spacing-lg: clamp(1.5rem, 4vw, 2rem);
+  --spacing-xl: clamp(2rem, 5vw, 3rem);
   
-  body {
-    @apply bg-gray-50 font-sans text-gray-800 leading-relaxed text-sm;
-    text-rendering: optimizeSpeed;
-  }
+  /* Dynamic font sizes */
+  --text-xs: clamp(0.75rem, 2vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 2.5vw, 1rem);
+  --text-base: clamp(1rem, 3vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 3.5vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 4vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 5vw, 2rem);
+  --text-3xl: clamp(2rem, 6vw, 2.5rem);
+  
+  /* Dynamic container sizing */
+  --container-max-width: min(90vw, 28rem);
+  --container-max-width-sm: min(95vw, 24rem);
+  --container-max-width-lg: min(85vw, 32rem);
+  --container-max-width-xl: min(80vw, 36rem);
+}
 
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    @apply w-1.5 h-1.5;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded hover:bg-gray-400;
-  }
-
-  /* Focus styles */
-  *:focus {
-    @apply outline-2 outline-primary-500 outline-offset-2;
-  }
-
-  button:focus {
-    @apply outline-offset-0;
-  }
-
-  /* Selection styles */
-  ::selection {
-    @apply bg-primary-500 text-white;
-  }
-
-  ::-moz-selection {
-    @apply bg-primary-500 text-white;
+/* Use viewport height for mobile browsers */
+@supports (height: 100dvh) {
+  :root {
+    --vh: 1dvh;
   }
 }
 
-@layer components {
-  /* Remove input number arrows */
-  .no-spinner {
-    -webkit-appearance: none;
-    -moz-appearance: textfield;
-  }
-  
-  .no-spinner::-webkit-outer-spin-button,
-  .no-spinner::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* Custom color picker */
-  .color-picker {
-    -webkit-appearance: none;
-    @apply border-none w-full h-full cursor-pointer;
-  }
-  
-  .color-picker::-webkit-color-swatch-wrapper {
-    padding: 0;
-  }
-  
-  .color-picker::-webkit-color-swatch {
-    @apply border-none rounded-full;
-  }
-
-  /* Utility classes for animations */
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  .animate-slide-in {
-    animation: slideIn 0.3s ease-out;
-  }
-
-  .animate-pulse-soft {
-    animation: pulseSoft 2s ease-in-out infinite;
-  }
-}
-
+/* Responsive container utilities */
 @layer utilities {
-  /* Canvas container */
-  #canvas-container {
-    @apply w-screen h-screen overflow-hidden;
+  .container-dynamic {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
   }
+  
+  .container-dynamic-sm {
+    width: 100%;
+    max-width: var(--container-max-width-sm);
+    margin: 0 auto;
+  }
+  
+  .container-dynamic-lg {
+    width: 100%;
+    max-width: var(--container-max-width-lg);
+    margin: 0 auto;
+  }
+  
+  .container-dynamic-xl {
+    width: 100%;
+    max-width: var(--container-max-width-xl);
+    margin: 0 auto;
+  }
+  
+  /* Dynamic spacing utilities */
+  .space-dynamic-xs { gap: var(--spacing-xs); }
+  .space-dynamic-sm { gap: var(--spacing-sm); }
+  .space-dynamic-md { gap: var(--spacing-md); }
+  .space-dynamic-lg { gap: var(--spacing-lg); }
+  .space-dynamic-xl { gap: var(--spacing-xl); }
+  
+  /* Dynamic padding utilities */
+  .p-dynamic-xs { padding: var(--spacing-xs); }
+  .p-dynamic-sm { padding: var(--spacing-sm); }
+  .p-dynamic-md { padding: var(--spacing-md); }
+  .p-dynamic-lg { padding: var(--spacing-lg); }
+  .p-dynamic-xl { padding: var(--spacing-xl); }
+  
+  /* Dynamic margin utilities */
+  .m-dynamic-xs { margin: var(--spacing-xs); }
+  .m-dynamic-sm { margin: var(--spacing-sm); }
+  .m-dynamic-md { margin: var(--spacing-md); }
+  .m-dynamic-lg { margin: var(--spacing-lg); }
+  .m-dynamic-xl { margin: var(--spacing-xl); }
+}
 
-  /* Prevent mobile zoom on inputs */
-  @media screen and (max-width: 768px) {
-    input, select, textarea {
-      font-size: 16px !important;
-    }
+/* Smooth scrolling and better mobile experience */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Better touch targets for mobile */
+@media (max-width: 768px) {
+  button, input, select, textarea {
+    min-height: 44px; /* iOS recommended minimum */
+  }
+  
+  /* Prevent zoom on input focus for iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea {
+    font-size: 16px;
   }
 }
 
-/* Keyframes for animations */
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+/* Custom animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes slideIn {
-  0% { transform: translateY(-10px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-@keyframes pulseSoft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+/* Focus styles for better accessibility */
+.focus-visible:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
