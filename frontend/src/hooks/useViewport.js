@@ -74,16 +74,23 @@ export const getOptimalContainerSize = (width, height) => {
   } else if (width < 1280) {
     // Small desktop
     return {
-      maxWidth: '80vw',
+      maxWidth: '28rem',
       padding: '2rem',
       fontSize: '1.25rem',
     };
-  } else {
+  } else if (width < 1536) {
     // Large desktop
     return {
-      maxWidth: '75vw',
+      maxWidth: '32rem',
       padding: '2.5rem',
       fontSize: '1.375rem',
+    };
+  } else {
+    // Extra large desktop
+    return {
+      maxWidth: '36rem',
+      padding: '3rem',
+      fontSize: '1.5rem',
     };
   }
 };

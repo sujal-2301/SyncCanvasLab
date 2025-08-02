@@ -13,26 +13,27 @@
   --vw: 1vw;
 
   /* Dynamic spacing based on viewport */
-  --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
-  --spacing-sm: clamp(0.5rem, 2vw, 1rem);
-  --spacing-md: clamp(1rem, 3vw, 1.5rem);
-  --spacing-lg: clamp(1.5rem, 4vw, 2rem);
-  --spacing-xl: clamp(2rem, 5vw, 3rem);
+  --spacing-xs: clamp(0.25rem, 0.8vw, 0.5rem);
+  --spacing-sm: clamp(0.5rem, 1.5vw, 1rem);
+  --spacing-md: clamp(1rem, 2.5vw, 1.5rem);
+  --spacing-lg: clamp(1.5rem, 3.5vw, 2rem);
+  --spacing-xl: clamp(2rem, 4.5vw, 3rem);
 
   /* Dynamic font sizes */
-  --text-xs: clamp(0.75rem, 2vw, 0.875rem);
-  --text-sm: clamp(0.875rem, 2.5vw, 1rem);
-  --text-base: clamp(1rem, 3vw, 1.125rem);
-  --text-lg: clamp(1.125rem, 3.5vw, 1.25rem);
-  --text-xl: clamp(1.25rem, 4vw, 1.5rem);
-  --text-2xl: clamp(1.5rem, 5vw, 2rem);
-  --text-3xl: clamp(2rem, 6vw, 2.5rem);
+  --text-xs: clamp(0.75rem, 1.5vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 2vw, 1rem);
+  --text-base: clamp(1rem, 2.5vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 3vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 3.5vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 4vw, 2rem);
+  --text-3xl: clamp(2rem, 5vw, 2.5rem);
 
   /* Dynamic container sizing */
   --container-max-width: min(90vw, 28rem);
   --container-max-width-sm: min(95vw, 24rem);
   --container-max-width-lg: min(85vw, 32rem);
   --container-max-width-xl: min(80vw, 36rem);
+  --container-max-width-2xl: min(75vw, 40rem);
 }
 
 /* Use viewport height for mobile browsers */
@@ -65,6 +66,12 @@
   .container-dynamic-xl {
     width: 100%;
     max-width: var(--container-max-width-xl);
+    margin: 0 auto;
+  }
+  
+  .container-dynamic-2xl {
+    width: 100%;
+    max-width: var(--container-max-width-2xl);
     margin: 0 auto;
   }
 

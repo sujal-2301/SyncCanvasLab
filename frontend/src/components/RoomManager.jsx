@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import { useViewport, getOptimalContainerSize } from "../hooks/useViewport";
 
 const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
-  const viewport = useViewport();
-  const containerSize = getOptimalContainerSize(
-    viewport.width,
-    viewport.height
-  );
   const [activeTab, setActiveTab] = useState("join");
   const [roomCode, setRoomCode] = useState("");
   const [roomName, setRoomName] = useState("");
@@ -61,15 +55,8 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-dynamic-sm">
-      <div
-        className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in"
-        style={{
-          maxWidth: containerSize.maxWidth,
-          padding: containerSize.padding,
-          fontSize: containerSize.fontSize,
-        }}
-      >
+    <div className="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in">
         {/* Header */}
         <div className="px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 pb-3 sm:pb-4 lg:pb-6 text-center bg-gradient-to-br from-primary-50 to-primary-100">
           <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-white text-xl sm:text-2xl lg:text-3xl font-bold mx-auto mb-2 sm:mb-3 lg:mb-4">
