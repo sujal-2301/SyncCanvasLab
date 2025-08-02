@@ -55,14 +55,14 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
+    <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
+      <div className="w-full max-w-md sm:max-w-lg bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in">
         {/* Header */}
-        <div className="px-8 pt-8 pb-6 text-center bg-gradient-to-br from-primary-50 to-primary-100">
-          <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+        <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 text-center bg-gradient-to-br from-primary-50 to-primary-100">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center text-white text-xl sm:text-2xl font-bold mx-auto mb-3 sm:mb-4">
             🎨
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
             SyncCanvasLab
           </h1>
           <p className="text-gray-600 text-sm">
@@ -70,14 +70,14 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           </p>
         </div>
 
-        <div className="px-8 py-6">
+        <div className="px-6 sm:px-8 py-4 sm:py-6">
           {/* Username Input */}
-          <div className="mb-4">
+          <div className="mb-6">
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-base font-semibold text-gray-900 mb-3"
             >
-              Your Name
+              👤 Your Name
             </label>
             <input
               type="text"
@@ -86,7 +86,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter your name..."
               maxLength={25}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-base"
               disabled={isLoading}
             />
           </div>
@@ -94,7 +94,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {/* Tabs */}
           <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
             <button
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm sm:text-base font-medium transition-all duration-200 ${
                 activeTab === "join"
                   ? "bg-white text-gray-900 shadow-sm"
                   : "text-gray-600 hover:text-gray-900"
@@ -105,7 +105,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               🚪 Join Room
             </button>
             <button
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm sm:text-base font-medium transition-all duration-200 ${
                 activeTab === "create"
                   ? "bg-white text-gray-900 shadow-sm"
                   : "text-gray-600 hover:text-gray-900"
@@ -127,32 +127,73 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
           {/* Join Room Form */}
           {activeTab === "join" && (
-            <form onSubmit={handleJoinRoom} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="roomCode"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Room Code
-                </label>
-                <input
-                  type="text"
-                  id="roomCode"
-                  value={roomCode}
-                  onChange={(e) => setRoomCode(e.target.value)}
-                  placeholder="Enter 6-character room code"
-                  maxLength={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center font-mono text-lg uppercase tracking-widest focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200 disabled:bg-gray-50 disabled:text-gray-500"
-                  disabled={isLoading}
-                  autoFocus
-                />
-                <p className="mt-2 text-xs text-gray-500">
-                  Ask the room creator for the 6-character room code
-                </p>
+            <form onSubmit={handleJoinRoom} className="space-y-6">
+              {/* Room Code Section */}
+              <div className="text-center">
+                <div className="mb-4">
+                  <label
+                    htmlFor="roomCode"
+                    className="block text-lg font-semibold text-gray-900 mb-3"
+                  >
+                    📱 Enter Room Code
+                  </label>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Ask the room creator to share their 6-character room code
+                  </p>
+                </div>
+                
+                {/* Large, prominent room code input */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="roomCode"
+                    value={roomCode}
+                    onChange={(e) => setRoomCode(e.target.value)}
+                    placeholder="ABC123"
+                    maxLength={6}
+                    className="w-full px-6 py-4 border-2 border-gray-300 rounded-xl text-center font-mono text-2xl sm:text-3xl uppercase tracking-[0.3em] font-bold focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 bg-white shadow-sm"
+                    disabled={isLoading}
+                    autoFocus
+                    autoComplete="off"
+                    spellCheck="false"
+                  />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4">
+                    <span className="text-gray-400 text-lg">🔑</span>
+                  </div>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+                    <span className="text-gray-400 text-sm font-mono">
+                      {roomCode.length}/6
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Visual indicator for room code format */}
+                <div className="mt-3 flex justify-center">
+                  <div className="flex gap-1">
+                    {Array.from({ length: 6 }, (_, i) => (
+                      <div
+                        key={i}
+                        className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                          i < roomCode.length
+                            ? "bg-primary-500"
+                            : "bg-gray-200"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Help text */}
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800 flex items-center justify-center gap-2">
+                    <span>💡</span>
+                    <span>Room codes are 6 characters long (e.g., ABC123)</span>
+                  </p>
+                </div>
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 py-4 px-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 focus:ring-4 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-base"
                 disabled={isLoading || !roomCode.trim() || !username.trim()}
               >
                 {isLoading ? (
@@ -187,13 +228,13 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
           {/* Create Room Form */}
           {activeTab === "create" && (
-            <form onSubmit={handleCreateRoom} className="space-y-4">
+            <form onSubmit={handleCreateRoom} className="space-y-6">
               <div>
                 <label
                   htmlFor="roomName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-base font-semibold text-gray-900 mb-3"
                 >
-                  Room Name (Optional)
+                  🏠 Room Name (Optional)
                 </label>
                 <input
                   type="text"
@@ -202,17 +243,17 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                   onChange={(e) => setRoomName(e.target.value)}
                   placeholder="My Awesome Canvas"
                   maxLength={50}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-base"
                   disabled={isLoading}
                   autoFocus
                 />
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-3 text-sm text-gray-600">
                   Give your room a memorable name for easier identification
                 </p>
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 py-4 px-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 focus:ring-4 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-base"
                 disabled={isLoading || !username.trim()}
               >
                 {isLoading ? (
@@ -247,10 +288,10 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-8 pb-8 pt-4 border-t border-gray-100 bg-gray-50">
+        <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-4 border-t border-gray-100 bg-gray-50">
           <div className="flex items-start gap-3 text-sm text-gray-600">
-            <span className="text-lg">💡</span>
-            <p>
+            <span className="text-lg flex-shrink-0">💡</span>
+            <p className="leading-relaxed">
               <strong className="text-gray-900">Tip:</strong> Share your room
               code with others to collaborate in real-time!
             </p>
