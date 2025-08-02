@@ -167,6 +167,69 @@ function App() {
     };
   }, []);
 
+  // Handle page unload/visibility change for mobile compatibility
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (currentRoom) {
+        console.log(`Page unloading - leaving room: ${currentRoom.id}`);
+        socket.emit("leave-room", currentRoom.id);
+        // Also emit force-leave as backup
+        socket.emit("force-leave-room", currentRoom.id);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden' && currentRoom) {
+        console.log(`Page hidden - leaving room: ${currentRoom.id}`);
+        socket.emit("leave-room", currentRoom.id);
+        // Also emit force-leave as backup
+        socket.emit("force-leave-room", currentRoom.id);
+      }
+    };
+
+    // Add event listeners for page unload
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('pagehide', handleBeforeUnload);
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup event listeners
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('pagehide', handleBeforeUnload);
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [currentRoom]);
+
+  // Heartbeat mechanism to detect connection issues
+  useEffect(() => {
+    if (!currentRoom) return;
+
+    const heartbeatInterval = setInterval(() => {
+      if (socket.connected) {
+        socket.emit("heartbeat");
+      }
+    }, 30000); // Send heartbeat every 30 seconds
+
+    return () => {
+      clearInterval(heartbeatInterval);
+    };
+  }, [currentRoom]);
+
+  // Force leave room when component unmounts
+  useEffect(() => {
+    return () => {
+      if (currentRoom) {
+        console.log(`Component unmounting - forcing leave room: ${currentRoom.id}`);
+        // Try normal leave first, then force leave as backup
+        socket.emit("leave-room", currentRoom.id);
+        // Also emit force-leave as a backup mechanism
+        setTimeout(() => {
+          socket.emit("force-leave-room", currentRoom.id);
+        }, 1000);
+      }
+    };
+  }, [currentRoom]);
+
   // Format users for RoomInfo component
   const formattedUsers = useMemo(
     () =>

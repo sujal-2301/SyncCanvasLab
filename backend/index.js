@@ -381,7 +381,10 @@ io.on("connection", (socket) => {
   // Handle explicit room leave
   socket.on("leave-room", (roomId) => {
     const userInfo = users.get(socket.id);
-    if (!userInfo) return;
+    if (!userInfo) {
+      console.log(`Leave-room called for unknown user: ${socket.id}`);
+      return;
+    }
 
     const room = rooms.get(roomId);
     if (room && room.users.has(socket.id)) {
@@ -406,13 +409,15 @@ io.on("connection", (socket) => {
         rooms.delete(roomId);
         console.log(`Room ${roomId} deleted - no users remaining`);
       }
+    } else {
+      console.log(`User ${socket.id} not found in room ${roomId} for leave-room`);
     }
 
     // Clean up user data last
     users.delete(socket.id);
   });
 
-  // Handle disconnection
+    // Handle disconnection
   socket.on("disconnect", () => {
     const userInfo = users.get(socket.id);
     const userName = userInfo ? userInfo.name : socket.id;
@@ -423,7 +428,7 @@ io.on("connection", (socket) => {
       if (room.users.has(socket.id)) {
         const user = room.users.get(socket.id);
         room.users.delete(socket.id);
-
+        
         // Notify others in the room
         socket.to(roomId).emit("user-left", {
           userId: socket.id,
@@ -445,6 +450,45 @@ io.on("connection", (socket) => {
     }
 
     // Remove user from global users map last
+    users.delete(socket.id);
+  });
+
+  // Handle heartbeat to detect stale connections
+  socket.on("heartbeat", () => {
+    socket.emit("heartbeat-ack");
+  });
+
+  // Force leave room (for cleanup purposes)
+  socket.on("force-leave-room", (roomId) => {
+    const userInfo = users.get(socket.id);
+    if (!userInfo) return;
+
+    const room = rooms.get(roomId);
+    if (room && room.users.has(socket.id)) {
+      const user = room.users.get(socket.id);
+
+      // Remove user from room
+      room.users.delete(socket.id);
+      socket.leave(roomId);
+
+      // Notify others in the room
+      socket.to(roomId).emit("user-left", {
+        userId: socket.id,
+        name: user.name,
+      });
+
+      console.log(
+        `User ${user.name} (${socket.id}) force-left room ${roomId}. Remaining users: ${room.users.size}`
+      );
+
+      // Clean up empty rooms
+      if (room.users.size === 0) {
+        rooms.delete(roomId);
+        console.log(`Room ${roomId} deleted - no users remaining after force leave`);
+      }
+    }
+
+    // Clean up user data
     users.delete(socket.id);
   });
 });
