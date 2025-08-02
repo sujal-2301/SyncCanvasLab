@@ -56,7 +56,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-2 sm:p-4">
-      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in max-h-[90vh] flex flex-col">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-scale-in flex flex-col">
         {/* Header */}
         <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3 text-center bg-gradient-to-br from-primary-50 to-primary-100">
           <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white text-lg sm:text-xl lg:text-2xl font-bold mx-auto mb-1 sm:mb-2">
@@ -70,12 +70,12 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           </p>
         </div>
 
-        <div className="px-4 sm:px-6 py-3 sm:py-4 flex-1 flex flex-col min-h-0">
+        <div className="px-4 sm:px-6 py-2 sm:py-3 flex-1 flex flex-col">
           {/* Username Input */}
-          <div className="mb-3 sm:mb-4">
+          <div className="mb-2 sm:mb-3">
             <label
               htmlFor="username"
-              className="block text-sm sm:text-base font-semibold text-gray-900 mb-1 sm:mb-2"
+              className="block text-sm sm:text-base font-semibold text-gray-900 mb-1"
             >
               👤 Your Name
             </label>
@@ -86,15 +86,15 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter your name..."
               maxLength={25}
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm sm:text-base"
+              className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 text-sm sm:text-base"
               disabled={isLoading}
             />
           </div>
 
           {/* Tabs */}
-          <div className="flex bg-gray-100 rounded-lg p-1 mb-3 sm:mb-4">
+          <div className="flex bg-gray-100 rounded-lg p-1 mb-2 sm:mb-3">
             <button
-              className={`flex-1 flex items-center justify-center gap-1 py-2 sm:py-3 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
+              className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
                 activeTab === "join"
                   ? "bg-white text-gray-900 shadow-sm"
                   : "text-gray-600 hover:text-gray-900"
@@ -105,7 +105,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               🚪 Join
             </button>
             <button
-              className={`flex-1 flex items-center justify-center gap-1 py-2 sm:py-3 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
+              className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 sm:px-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
                 activeTab === "create"
                   ? "bg-white text-gray-900 shadow-sm"
                   : "text-gray-600 hover:text-gray-900"
@@ -119,7 +119,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-3 p-2 sm:p-3 bg-danger-50 border border-danger-200 text-danger-700 rounded-md text-xs sm:text-sm flex items-center gap-2 animate-slide-in">
+            <div className="mb-2 p-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-md text-xs sm:text-sm flex items-center gap-2 animate-slide-in">
               <span>⚠️</span>
               <span>{error}</span>
             </div>
@@ -129,7 +129,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {activeTab === "join" && (
             <form
               onSubmit={handleJoinRoom}
-              className="space-y-2 sm:space-y-3 flex-1 flex flex-col min-h-0"
+              className="space-y-2 flex-1 flex flex-col"
             >
               {/* Room Code Section */}
               <div className="text-center">
@@ -154,7 +154,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                     onChange={(e) => setRoomCode(e.target.value)}
                     placeholder="ABC123"
                     maxLength={6}
-                    className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 rounded-xl text-center font-mono text-xl sm:text-2xl uppercase tracking-wider font-bold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 bg-white shadow-sm"
+                    className="w-full px-4 sm:px-6 py-3 border-2 border-gray-300 rounded-xl text-center font-mono text-lg sm:text-xl uppercase tracking-wider font-bold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500 bg-white shadow-sm"
                     disabled={isLoading}
                     autoFocus
                     autoComplete="off"
@@ -196,7 +196,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 disabled={isLoading || !roomCode.trim() || !username.trim()}
               >
                 {isLoading ? (
@@ -233,7 +233,7 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
           {activeTab === "create" && (
             <form
               onSubmit={handleCreateRoom}
-              className="space-y-2 sm:space-y-3 flex-1 flex flex-col min-h-0"
+              className="space-y-2 flex-1 flex flex-col"
             >
               <div>
                 <label
@@ -253,13 +253,13 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
                   disabled={isLoading}
                   autoFocus
                 />
-                <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-600">
+                <p className="mt-1 text-xs text-gray-600">
                   Give your room a memorable name for easier identification
                 </p>
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 sm:py-4 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 sm:px-6 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 disabled={isLoading || !username.trim()}
               >
                 {isLoading ? (
@@ -294,9 +294,9 @@ const RoomManager = ({ onJoinRoom, onCreateRoom }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-4 sm:px-6 pb-2 sm:pb-3 pt-1 sm:pt-2 border-t border-gray-100 bg-gray-50">
-          <div className="flex items-start gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600">
-            <span className="text-xs sm:text-sm flex-shrink-0">💡</span>
+        <div className="px-4 sm:px-6 pb-2 pt-1 border-t border-gray-100 bg-gray-50">
+          <div className="flex items-start gap-1 text-xs text-gray-600">
+            <span className="text-xs flex-shrink-0">💡</span>
             <p className="leading-relaxed">
               <strong className="text-gray-900">Tip:</strong> Share your room
               code with others to collaborate in real-time!
